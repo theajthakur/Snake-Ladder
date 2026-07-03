@@ -19,29 +19,10 @@ export default function CellHighlightInput({ onChange }: CellHighlightInputProps
   }
 
   return (
-    <div
-      style={{
-        position:       'fixed',
-        top:            16,
-        right:          16,
-        zIndex:         999,
-        display:        'flex',
-        alignItems:     'center',
-        gap:            8,
-        background:     'rgba(0,0,0,0.70)',
-        border:         '1px solid rgba(255,255,255,0.20)',
-        borderRadius:   10,
-        padding:        '8px 12px',
-        backdropFilter: 'blur(8px)',
-      }}
-    >
+    <div className="fixed top-4 right-4 z-50 flex items-center gap-2 bg-secondary-900 border border-secondary-700 rounded-xl p-2 px-3 shadow-sm">
       <label
         htmlFor="cell-highlight"
-        style={{
-          color:      'rgba(255,255,255,0.70)',
-          fontSize:   '0.75rem',
-          fontWeight: 600,
-        }}
+        className="text-secondary-300 text-xs font-semibold"
       >
         Highlight cell
       </label>
@@ -52,17 +33,7 @@ export default function CellHighlightInput({ onChange }: CellHighlightInputProps
         max={100}
         placeholder="1–100"
         onChange={handleChange}
-        style={{
-          width:        64,
-          padding:      '4px 8px',
-          borderRadius: 6,
-          border:       '1px solid rgba(255,255,255,0.25)',
-          background:   'rgba(255,255,255,0.10)',
-          color:        '#fff',
-          fontSize:     '0.85rem',
-          outline:      'none',
-          textAlign:    'center',
-        }}
+        className="w-16 px-2 py-1 rounded-lg border border-secondary-700 bg-secondary-800 text-secondary-100 text-sm text-center outline-none focus:border-primary-500 transition-colors"
       />
     </div>
   )

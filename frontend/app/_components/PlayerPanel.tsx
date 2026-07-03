@@ -20,38 +20,14 @@ export default function PlayerPanel({ players, currentPlayerId }: PlayerPanelPro
   const rows = players ?? PLAYERS.map((p) => ({ id: p.id, name: p.name }))
 
   return (
-    <div
-      style={{
-        position:       'fixed',
-        top:             16,
-        left:            16,
-        zIndex:          999,
-        minWidth:        190,
-        background:     'rgba(0, 0, 0, 0.72)',
-        border:         '1px solid rgba(255, 255, 255, 0.12)',
-        borderRadius:    14,
-        backdropFilter: 'blur(12px)',
-        overflow:       'hidden',
-        boxShadow:      '0 8px 32px rgba(0,0,0,0.55)',
-      }}
-    >
+    <div className="fixed top-4 left-4 z-50 min-w-[190px] bg-secondary-900 border border-secondary-700 rounded-xl overflow-hidden shadow-sm">
       {/* Panel header */}
-      <div
-        style={{
-          padding:       '8px 14px',
-          borderBottom:  '1px solid rgba(255,255,255,0.10)',
-          fontSize:      '0.6rem',
-          fontWeight:     700,
-          letterSpacing: '0.12em',
-          textTransform: 'uppercase',
-          color:         'rgba(255,255,255,0.40)',
-        }}
-      >
+      <div className="py-2 px-3.5 border-b border-secondary-800 text-[0.6rem] font-bold tracking-wider uppercase text-secondary-500">
         Players
       </div>
 
       {/* Player rows */}
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <table className="w-full border-collapse">
         <tbody>
           {rows.map((player, idx) => {
             const isCurrent = player.id === currentPlayerId
@@ -60,42 +36,37 @@ export default function PlayerPanel({ players, currentPlayerId }: PlayerPanelPro
               <tr
                 key={player.id}
                 style={{
-                  borderBottom:
-                    idx < rows.length - 1
-                      ? '1px solid rgba(255,255,255,0.07)'
-                      : 'none',
-                  background: isCurrent
-                    ? `${config.color}18`
-                    : 'transparent',
-                  transition: 'background 0.3s',
+                  backgroundColor: isCurrent ? `${config.color}15` : 'transparent',
                 }}
+                className={`transition-colors duration-250 ${
+                  idx < rows.length - 1 ? 'border-b border-secondary-800/40' : ''
+                }`}
               >
                 {/* Token */}
-                <td style={{ padding: '8px 8px 8px 14px', width: 44, verticalAlign: 'middle' }}>
+                <td className="p-2 pl-3.5 w-11 align-middle">
                   <PlayerToken playerId={player.id} size={28} />
                 </td>
 
                 {/* Name */}
-                <td style={{ padding: '8px 14px 8px 4px', verticalAlign: 'middle' }}>
+                <td className="p-2 pr-3.5 pl-1 align-middle">
                   <span
                     style={{
-                      fontSize:      '0.82rem',
-                      fontWeight:     isCurrent ? 800 : 600,
-                      color:          isCurrent ? config.color : 'rgba(255,255,255,0.7)',
-                      textShadow:     isCurrent ? `0 0 8px ${config.color}88` : 'none',
-                      letterSpacing: '0.02em',
-                      fontFamily:    'system-ui, sans-serif',
-                      transition:    'color 0.3s',
+                      color: isCurrent ? config.color : undefined,
                     }}
+                    className={`text-xs tracking-wide font-sans transition-colors duration-250 ${
+                      isCurrent ? 'font-extrabold' : 'font-semibold text-secondary-300'
+                    }`}
                   >
                     {player.name}
                   </span>
                 </td>
 
                 {/* "▶" active indicator */}
-                <td style={{ padding: '8px 10px 8px 0', verticalAlign: 'middle', width: 20 }}>
+                <td className="p-2 pr-2.5 pl-0 align-middle w-5 text-right">
                   {isCurrent && (
-                    <span style={{ color: config.color, fontSize: '0.7rem' }}>▶</span>
+                    <span style={{ color: config.color }} className="text-[0.7rem]">
+                      ▶
+                    </span>
                   )}
                 </td>
               </tr>

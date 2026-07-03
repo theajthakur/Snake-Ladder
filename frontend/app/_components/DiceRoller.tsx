@@ -4,269 +4,196 @@
  * DiceRoller.tsx
  *
  * Fixed right-side dice panel.
- * - SVG dice face with dot layout
- * - "Lottery machine" animation (fast → slow → final)
- * - Click or Space to roll
+ *
+ * Animation strategy (RACE-CONDITION FREE):
+ *  - When rolling=true  → CSS-only overlay cycles through all 6 faces (pure keyframes,
+ *                         zero React state mutations, zero setInterval)
+ *  - When rolling=false → overlay unmounts; underlying SVG shows EXACT `value` from props
+ *
+ * The actual die face is always driven by the `value` prop.
+ * No internal display-state that can race with React's scheduler.
  */
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect } from 'react'
 import { PLAYERS } from '@/app/data/players'
 import PlayerToken from '@/app/_components/PlayerToken'
 import type { GamePlayer } from '@/app/_store/gameStore'
 
-// ── Dot positions per face (as 0-1 fractions of viewBox 0-100) ──────────────
+// ── Dot positions per face (0-1 fractions of 100×100 viewBox) ───────────────
 const DOTS: Record<number, [number, number][]> = {
   1: [[0.5, 0.5]],
   2: [[0.72, 0.28], [0.28, 0.72]],
-  3: [[0.72, 0.28], [0.5, 0.5], [0.28, 0.72]],
+  3: [[0.72, 0.28], [0.5,  0.5 ], [0.28, 0.72]],
   4: [[0.28, 0.28], [0.72, 0.28], [0.28, 0.72], [0.72, 0.72]],
-  5: [[0.28, 0.28], [0.72, 0.28], [0.5, 0.5], [0.28, 0.72], [0.72, 0.72]],
+  5: [[0.28, 0.28], [0.72, 0.28], [0.5,  0.5 ], [0.28, 0.72], [0.72, 0.72]],
   6: [
     [0.28, 0.22], [0.28, 0.5], [0.28, 0.78],
     [0.72, 0.22], [0.72, 0.5], [0.72, 0.78],
   ],
 }
 
-// ── SVG Dice Face ────────────────────────────────────────────────────────────
-function DiceFace({
-  value,
-  size,
-  color,
-  rolling,
-}: {
-  value: number
-  size: number
-  color: string
-  rolling: boolean
-}) {
-  const dots  = DOTS[value] ?? DOTS[1]
-  const dotR  = 7   // dot radius in SVG units
+const FACE_COUNT  = 6
+const CYCLE_MS    = 360          // one full 1→2→3→4→5→6 cycle in ms
+const STEP_FRAC   = 100 / FACE_COUNT  // each face is visible for 16.67% of cycle
 
+// ── A single face in SVG ─────────────────────────────────────────────────────
+function Face({
+  face,
+  color,
+  size,
+  style,
+}: {
+  face: number
+  color: string
+  size: number
+  style?: React.CSSProperties
+}) {
+  const dots = DOTS[face] ?? DOTS[1]
   return (
     <svg
       width={size}
       height={size}
       viewBox="0 0 100 100"
-      style={{
-        display:    'block',
-        borderRadius: '18%',
-        filter:     rolling
-          ? `drop-shadow(0 0 14px ${color}) drop-shadow(0 0 6px ${color})`
-          : `drop-shadow(0 0 6px ${color}66)`,
-        transition: 'filter 0.15s',
-        animation:  rolling ? 'diceShake 0.08s ease-in-out infinite alternate' : 'none',
-      }}
+      style={{ display: 'block', borderRadius: '18%', ...style }}
     >
-      {/* Face */}
-      <rect
-        x="2" y="2" width="96" height="96" rx="18" ry="18"
-        fill="#0c0c1a"
+      <rect x="2" y="2" width="96" height="96" rx="18" ry="18"
+        fill="var(--color-secondary-900)"
         stroke={color}
         strokeWidth="3.5"
       />
-
-      {/* Dots */}
       {dots.map(([fx, fy], i) => (
-        <circle
-          key={i}
-          cx={fx * 100}
-          cy={fy * 100}
-          r={dotR}
-          fill={color}
+        <circle key={i} cx={fx * 100} cy={fy * 100} r={7} fill={color} />
+      ))}
+    </svg>
+  )
+}
+
+// ── CSS-only rolling overlay: 6 faces staggered with animation-delay ─────────
+function RollingOverlay({ color, size }: { color: string; size: number }) {
+  const cycleSec = CYCLE_MS / 1000
+
+  return (
+    <div style={{ position: 'relative', width: size, height: size }}>
+      {/* keyframes: each face visible for 1/6 of cycle then hidden */}
+      <style>{`
+        @keyframes _df_show {
+          0%                       { opacity: 1; }
+          ${STEP_FRAC.toFixed(4)}% { opacity: 0; }
+          100%                     { opacity: 0; }
+        }
+      `}</style>
+
+      {[1, 2, 3, 4, 5, 6].map((face) => (
+        <Face
+          key={face}
+          face={face}
+          color={color}
+          size={size}
           style={{
-            filter: `drop-shadow(0 0 ${rolling ? 5 : 3}px ${color})`,
-            transition: 'r 0.1s',
+            position: face === 1 ? 'relative' : 'absolute',
+            top: 0,
+            left: 0,
+            opacity: 0,
+            animation: `_df_show ${cycleSec}s steps(1, end) infinite`,
+            animationDelay: `${(((face - 1) / FACE_COUNT) * CYCLE_MS) / 1000}s`,
           }}
         />
       ))}
-    </svg>
+    </div>
   )
 }
 
 // ── DiceRoller panel ─────────────────────────────────────────────────────────
 export interface DiceRollerProps {
   currentPlayer: GamePlayer
-  onRoll: (value: number) => void
-  /** Disable rolling while move animation / state update is in progress */
+  /** Exact dice value from the API — shown immediately when rolling=false */
+  value: number
+  /** True while API call is in flight — shows CSS rolling animation */
+  rolling: boolean
+  onRoll: () => void
   disabled?: boolean
-  /**
-   * Optional override for how the final dice value is chosen.
-   * Defaults to a uniform random 1-6.
-   * Use this to bias the result (e.g. 1/3 chance of 6 for locked players).
-   */
-  getFinalValue?: () => number
 }
 
 export default function DiceRoller({
   currentPlayer,
+  value,
+  rolling,
   onRoll,
   disabled = false,
-  getFinalValue,
 }: DiceRollerProps) {
-  const config    = PLAYERS[currentPlayer.id]
-  const [rolling, setRolling]      = useState(false)
-  const [display, setDisplay]      = useState<number>(1)
-  const timeoutRef                 = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  const roll = useCallback(() => {
-    if (rolling || disabled) return
-
-    const picker = getFinalValue ?? (() => Math.floor(Math.random() * 6) + 1)
-    const final  = Math.min(6, Math.max(1, Math.round(picker()))) as 1|2|3|4|5|6
-    setRolling(true)
-
-    const TOTAL_STEPS = 16
-
-    const tick = (step: number) => {
-      setDisplay(Math.floor(Math.random() * 6) + 1)
-
-      if (step < TOTAL_STEPS) {
-        // Exponential ease-out: 18ms → ~168ms, total ≈ 880ms
-        const t     = step / TOTAL_STEPS
-        const delay = 18 + Math.pow(t, 3) * 150
-        timeoutRef.current = setTimeout(() => tick(step + 1), delay)
-      } else {
-        setDisplay(final)
-        setRolling(false)
-        onRoll(final)
-      }
-    }
-
-    timeoutRef.current = setTimeout(() => tick(0), 18)
-  }, [rolling, disabled, onRoll])
+  const config     = PLAYERS[currentPlayer.id]
+  const isDisabled = rolling || disabled
 
   // Space-bar listener
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.code === 'Space' && !e.repeat) {
         e.preventDefault()
-        roll()
+        if (!rolling && !disabled) onRoll()
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [roll])
-
-  // Cleanup
-  useEffect(() => () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current)
-  }, [])
-
-  const isDisabled = rolling || disabled
+  }, [onRoll, rolling, disabled])
 
   return (
     <div
-      style={{
-        position:       'fixed',
-        right:           16,
-        top:            '50%',
-        transform:      'translateY(-50%)',
-        zIndex:          999,
-        width:           164,
-        display:        'flex',
-        flexDirection:  'column',
-        alignItems:     'center',
-        background:     'rgba(6, 6, 18, 0.85)',
-        border:         `1px solid ${config.color}44`,
-        borderRadius:    20,
-        backdropFilter: 'blur(16px)',
-        boxShadow:      `0 12px 40px rgba(0,0,0,0.65), 0 0 28px ${config.color}1a`,
-        overflow:       'hidden',
-        transition:     'border-color 0.3s, box-shadow 0.3s',
-      }}
+      style={{ borderColor: `${config.color}44` }}
+      className="fixed right-4 top-1/2 -translate-y-1/2 z-50 w-40 flex flex-col items-center bg-secondary-900 border border-secondary-700 rounded-2xl overflow-hidden shadow-md"
     >
       {/* ── Header ── */}
-      <div style={{
-        width:          '100%',
-        padding:        '10px 14px',
-        borderBottom:   '1px solid rgba(255,255,255,0.07)',
-        fontSize:       '0.58rem',
-        fontWeight:      700,
-        letterSpacing:  '0.14em',
-        textTransform:  'uppercase',
-        color:          'rgba(255,255,255,0.30)',
-        display:        'flex',
-        alignItems:     'center',
-        gap:             6,
-        boxSizing:      'border-box',
-      }}>
-        🎲&nbsp; Dice
+      <div className="w-full py-2.5 px-3.5 border-b border-secondary-800 text-[0.6rem] font-bold tracking-wider uppercase text-secondary-500 flex items-center gap-1.5 box-border">
+        🎲 Dice
       </div>
 
       {/* ── Current player ── */}
-      <div style={{
-        width:          '100%',
-        padding:        '9px 12px',
-        borderBottom:   '1px solid rgba(255,255,255,0.06)',
-        display:        'flex',
-        alignItems:     'center',
-        gap:             8,
-        boxSizing:      'border-box',
-      }}>
+      <div className="w-full py-2.5 px-3 border-b border-secondary-800 flex items-center gap-2 box-border">
         <PlayerToken playerId={currentPlayer.id} size={26} />
-        <span style={{
-          fontSize:      '0.78rem',
-          fontWeight:     700,
-          color:          config.color,
-          textShadow:    `0 0 8px ${config.color}66`,
-          fontFamily:    'system-ui, sans-serif',
-          overflow:      'hidden',
-          textOverflow:  'ellipsis',
-          whiteSpace:    'nowrap',
-          flex:           1,
-        }}>
+        <span
+          style={{ color: config.color }}
+          className="text-xs font-bold truncate flex-1 font-sans"
+        >
           {currentPlayer.name}
         </span>
       </div>
 
-      {/* ── Dice face ── */}
-      <div style={{ padding: '22px 0 16px' }}>
-        <DiceFace value={display} size={100} color={config.color} rolling={rolling} />
+      {/* ── Dice area ──
+            rolling=true  → CSS animated overlay (all 6 faces, pure keyframes)
+            rolling=false → exact API value face (no state, direct from prop)
+      ── */}
+      <div className="py-5">
+        {rolling ? (
+          <RollingOverlay color={config.color} size={100} />
+        ) : (
+          <Face face={Math.min(6, Math.max(1, value || 1))} color={config.color} size={100} />
+        )}
       </div>
 
+      {/* ── Last rolled label ── */}
+      {!rolling && value >= 1 && (
+        <div className="text-[0.6rem] font-bold tracking-wider text-secondary-400 -mt-3 mb-1">
+          Rolled: <span style={{ color: config.color }}>{value}</span>
+        </div>
+      )}
+
       {/* ── Roll button ── */}
-      <div style={{ width: '100%', padding: '0 14px 14px', boxSizing: 'border-box' }}>
+      <div className="w-full px-3.5 pb-3.5 box-border">
         <button
           id="roll-dice-btn"
-          onClick={roll}
+          onClick={() => { if (!isDisabled) onRoll() }}
           disabled={isDisabled}
-          style={{
-            width:          '100%',
-            padding:        '11px 0',
-            borderRadius:    10,
-            border:         'none',
-            background:     isDisabled
-              ? 'rgba(255,255,255,0.06)'
-              : `linear-gradient(135deg, ${config.color}, ${config.shadow})`,
-            boxShadow:      isDisabled ? 'none' : `0 4px 18px ${config.color}55`,
-            color:          isDisabled ? 'rgba(255,255,255,0.22)' : '#fff',
-            fontSize:       '0.82rem',
-            fontWeight:      800,
-            letterSpacing:  '0.05em',
-            cursor:         isDisabled ? 'not-allowed' : 'pointer',
-            transition:     'all 0.2s',
-            fontFamily:     'system-ui, sans-serif',
-          }}
+          style={{ backgroundColor: isDisabled ? undefined : config.color }}
+          className={`w-full py-2.5 rounded-lg text-xs font-extrabold tracking-wider transition-colors font-sans border-0 ${
+            isDisabled
+              ? 'bg-secondary-800 text-secondary-500 cursor-not-allowed'
+              : 'text-white cursor-pointer hover:opacity-90'
+          }`}
         >
           {rolling ? 'Rolling…' : 'Roll Dice'}
         </button>
-        <p style={{
-          margin:         '7px 0 0',
-          textAlign:      'center',
-          fontSize:       '0.56rem',
-          color:          'rgba(255,255,255,0.22)',
-          letterSpacing:  '0.04em',
-        }}>
+        <p className="mt-2 text-center text-[0.55rem] text-secondary-500 tracking-wider font-sans">
           Click or press Space
         </p>
       </div>
-
-      {/* Keyframe for shake animation */}
-      <style>{`
-        @keyframes diceShake {
-          from { transform: rotate(-5deg) scale(0.96); }
-          to   { transform: rotate(5deg)  scale(1.04); }
-        }
-      `}</style>
     </div>
   )
 }

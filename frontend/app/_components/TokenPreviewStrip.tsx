@@ -10,22 +10,7 @@ import PlayerToken from '@/app/_components/PlayerToken'
 
 export default function TokenPreviewStrip() {
   return (
-    <div
-      style={{
-        position:       'fixed',
-        bottom:         16,
-        right:          16,
-        zIndex:         999,
-        display:        'flex',
-        gap:            10,
-        alignItems:     'center',
-        background:     'rgba(0,0,0,0.65)',
-        border:         '1px solid rgba(255,255,255,0.15)',
-        borderRadius:   12,
-        padding:        '8px 14px',
-        backdropFilter: 'blur(8px)',
-      }}
-    >
+    <div className="fixed bottom-4 right-4 z-50 flex gap-2.5 items-center bg-secondary-900 border border-secondary-700 rounded-xl p-2 px-3.5 shadow-sm">
       {PLAYERS.map((p) => (
         <PlayerToken key={p.id} playerId={p.id} size={38} />
       ))}

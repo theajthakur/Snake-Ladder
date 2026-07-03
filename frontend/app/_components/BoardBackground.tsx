@@ -16,7 +16,7 @@ interface BoardBackgroundProps {
   /** Called with the pixel rect of the rendered image inside the container */
   onRectChange: (rect: ContainRect) => void
   /** The ref of the parent container (used for ResizeObserver) */
-  containerRef: React.RefObject<HTMLDivElement>
+  containerRef: React.RefObject<HTMLDivElement | null>
 }
 
 export default function BoardBackground({
@@ -56,14 +56,7 @@ export default function BoardBackground({
       src={src}
       alt="board background"
       onLoad={recalc}
-      style={{
-        position:        'absolute',
-        inset:           0,
-        width:           '100%',
-        height:          '100%',
-        objectFit:       'contain',
-        objectPosition:  'center',
-      }}
+      className="absolute inset-0 w-full h-full object-contain object-center"
     />
   )
 }

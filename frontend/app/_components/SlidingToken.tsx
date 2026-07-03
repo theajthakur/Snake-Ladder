@@ -95,7 +95,6 @@ export default function SlidingToken({
     <div
       onTransitionEnd={handleTransitionEnd}
       style={{
-        position:      'absolute',
         left:           pos.x - half,
         top:            pos.y - half,
         width:          tokenSize,
@@ -103,10 +102,8 @@ export default function SlidingToken({
         transition:     active
           ? `left ${duration}ms cubic-bezier(0.4,0,0.2,1), top ${duration}ms cubic-bezier(0.4,0,0.2,1)`
           : 'none',
-        zIndex:         200,
-        pointerEvents: 'none',
-        filter:        'drop-shadow(0 4px 12px rgba(0,0,0,0.7))',
       }}
+      className="absolute z-[200] pointer-events-none"
     >
       <PlayerToken playerId={playerId} size={tokenSize} />
     </div>

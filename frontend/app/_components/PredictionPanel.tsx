@@ -22,61 +22,16 @@ export default function PredictionPanel({
   const activeColor = PLAYERS[activePlayerId].color
 
   return (
-    <div
-      style={{
-        position:       'fixed',
-        bottom:          16,
-        right:           16,
-        zIndex:          999,
-        width:           240,
-        background:     'rgba(6, 6, 18, 0.85)',
-        border:         `1px solid rgba(255, 255, 255, 0.12)`,
-        borderRadius:    16,
-        backdropFilter: 'blur(16px)',
-        boxShadow:      '0 8px 32px rgba(0,0,0,0.65)',
-        overflow:       'hidden',
-        boxSizing:      'border-box',
-      }}
-    >
+    <div className="fixed bottom-4 right-4 z-50 w-60 bg-secondary-900 border border-secondary-700 rounded-2xl overflow-hidden shadow-sm">
       {/* Header */}
-      <div
-        style={{
-          padding:       '10px 14px',
-          borderBottom:  '1px solid rgba(255,255,255,0.07)',
-          fontSize:      '0.60rem',
-          fontWeight:     700,
-          letterSpacing: '0.14em',
-          textTransform: 'uppercase',
-          color:         'rgba(255,255,255,0.40)',
-          display:        'flex',
-          alignItems:     'center',
-          gap:             6,
-        }}
-      >
+      <div className="py-2.5 px-3.5 border-b border-secondary-800 text-[0.6rem] font-bold tracking-wider uppercase text-secondary-500 flex items-center gap-1.5 box-border">
         🔮 Turn Predictions (Range 2–6)
       </div>
 
       {/* Body List */}
-      <div
-        style={{
-          padding:        '12px',
-          display:        'flex',
-          flexDirection:  'column',
-          gap:             8,
-          maxHeight:       160,
-          overflowY:      'auto',
-        }}
-      >
+      <div className="p-3 flex flex-col gap-2 max-h-40 overflow-y-auto box-border">
         {predictions.length === 0 ? (
-          <div
-            style={{
-              fontSize:   '0.75rem',
-              color:      'rgba(255,255,255,0.35)',
-              textAlign:  'center',
-              padding:    '12px 0',
-              fontStyle:  'italic',
-            }}
-          >
+          <div className="text-xs text-secondary-500 text-center py-3 italic">
             No immediate danger/success cells in range (2–6)
           </div>
         ) : (
@@ -89,78 +44,38 @@ export default function PredictionPanel({
             return (
               <div
                 key={p.diceValue}
-                style={{
-                  display:        'flex',
-                  flexDirection:  'column',
-                  gap:             4,
-                  background:     isLadder
-                    ? 'rgba(46, 204, 64, 0.10)'
-                    : 'rgba(255, 59, 59, 0.10)',
-                  border:         `1px solid ${
-                    isLadder ? 'rgba(46, 204, 64, 0.25)' : 'rgba(255, 59, 59, 0.25)'
-                  }`,
-                  borderRadius:    8,
-                  padding:        '8px 10px',
-                  boxShadow:      isLadder
-                    ? '0 2px 8px rgba(46, 204, 64, 0.05)'
-                    : '0 2px 8px rgba(255, 59, 59, 0.05)',
-                  transition:     'transform 0.2s',
-                }}
+                className={`flex flex-col gap-1 border rounded-lg p-2.5 shadow-sm transition-transform duration-200 ${
+                  isLadder
+                    ? 'bg-accent-950/20 border-accent-800/30'
+                    : 'bg-primary-950/20 border-primary-800/30'
+                }`}
               >
                 {/* Roll & Cell info */}
-                <div
-                  style={{
-                    display:        'flex',
-                    alignItems:     'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
+                <div className="flex items-center justify-between">
                   <span
-                    style={{
-                      fontSize:   '0.75rem',
-                      fontWeight: 800,
-                      color:      isLadder ? '#2ECC40' : '#FF3B3B',
-                      textShadow: `0 0 6px ${isLadder ? '#2ECC4044' : '#FF3B3B44'}`,
-                    }}
+                    className={`text-xs font-black font-sans ${
+                      isLadder ? 'text-accent-400' : 'text-primary-400'
+                    }`}
                   >
                     🎲 Roll {p.diceValue}
                   </span>
-                  <span
-                    style={{
-                      fontSize:   '0.62rem',
-                      fontWeight: 700,
-                      color:      'rgba(255,255,255,0.45)',
-                      background: 'rgba(0,0,0,0.4)',
-                      padding:    '1px 4px',
-                      borderRadius: 3,
-                    }}
-                  >
+                  <span className="text-[0.62rem] font-bold text-secondary-400 bg-secondary-800 px-1 py-0.5 rounded">
                     Land: {p.targetCell}
                   </span>
                 </div>
 
                 {/* Outcome */}
-                <div
-                  style={{
-                    fontSize:   '0.70rem',
-                    color:      'rgba(255,255,255,0.8)',
-                    display:    'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    fontFamily: 'system-ui, sans-serif',
-                  }}
-                >
+                <div className="text-[0.7rem] text-secondary-200 flex items-center justify-between font-sans">
                   <span>
                     {isLadder ? '🪜 Climb to ' : '🐍 Slide to '}
-                    <strong style={{ color: '#fff', fontSize: '0.75rem', fontWeight: 800 }}>
+                    <strong className="text-white text-xs font-extrabold">
                       {p.resolvedCell}
                     </strong>
                   </span>
                   <span
-                    style={{
-                      fontWeight: 900,
-                      color:      isLadder ? '#2ECC40' : '#FF3B3B',
-                    }}
+                    className={`font-black ${
+                      isLadder ? 'text-accent-400' : 'text-primary-400'
+                    }`}
                   >
                     {isLadder ? `+${diff}` : `-${diff}`}
                   </span>
