@@ -20,6 +20,8 @@ class Game:
     player_size: int = 2
     game_started:bool = False
     winner: Optional[str] = None
+    last_roll_value: int = 0
+    last_roll_player: str = ""
 
 
 games: Dict[str, Game] = {}

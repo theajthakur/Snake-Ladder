@@ -30,11 +30,20 @@ def throw_dice(game_id, player_id, favour: bool = False):
                 game.winner=player_id
         else:
             pass
+    
+    game.last_roll_value = val
+    game.last_roll_player = player_id
+
+    player_ids = list(game.player_statuses.keys())
+    current_idx = player_ids.index(player_id)
+    next_idx = (current_idx + 1) % len(player_ids)
+    game.current_turn = player_ids[next_idx]
+
     return {
-        "value":val,
-        "position":player.position,
-        "turn":game.current_turn
-    }    
+        "value": val,
+        "position": player.position,
+        "turn": str(next_idx + 1)
+    }
 
 def dice(favour:bool=False):
     if favour:
