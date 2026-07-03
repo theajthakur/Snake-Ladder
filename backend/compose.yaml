@@ -1,0 +1,16 @@
+name: "snake_ladder_db"
+
+services:
+  db:
+    image: "postgres:15"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "[PASSWORD]"
+      POSTGRES_DB: "snake_ladder_db"
+    volumes:
+      - "pgdata:/var/lib/postgresql/data"
+    
+volumes:
+  pgdata:
