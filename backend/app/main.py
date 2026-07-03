@@ -35,7 +35,8 @@ origins = [
     "http://localhost:3000",
     "https://gtamodi.vercel.app",
     "https://rosamaria-superadmirable-nonparochially.ngrok-free.dev",
-    "http://192.168.31.155:3000"
+    "http://192.168.31.155:3000",
+    "https://snake-ladder-rouge.vercel.app"
 ]
 
 app.add_middleware(
