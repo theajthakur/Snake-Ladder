@@ -1,3 +1,4 @@
+import time
 from dataclasses import dataclass, field
 from typing import Dict, Optional
 from uuid import uuid4
@@ -23,6 +24,7 @@ class Game:
     winner: Optional[str] = None
     last_roll_value: int = 0
     last_roll_player: str = ""
+    last_interaction: float = field(default_factory=time.time)
 
 
 games: Dict[str, Game] = {}
@@ -56,6 +58,7 @@ def join_game(game_id: str, name: str) -> PlayerStatus:
 
     player = PlayerStatus(player_id=str(uuid4()), name=name)
     game.player_statuses[player.player_id]=player
+    game.last_interaction = time.time()
 
     # Set first player's turn
     if len(game.player_statuses) == 1:

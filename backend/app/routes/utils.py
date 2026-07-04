@@ -1,4 +1,5 @@
 import random
+import time
 from app.utils.game import games
 from app.utils.store import SNAKES,LADDERS
 
@@ -8,6 +9,7 @@ def throw_dice(game_id, player_id, favour: bool = False):
     game=games.get(game_id)
     if not game:
         raise ValueError("Invalid game_id")
+    game.last_interaction = time.time()
     player=game.player_statuses.get(player_id)
     if not player:
         raise ValueError("Invalid player_id")

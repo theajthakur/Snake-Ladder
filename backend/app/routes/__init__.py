@@ -1,3 +1,5 @@
+import asyncio
+import time
 from fastapi import APIRouter, HTTPException, status
 from uuid import uuid4
 from .utils import throw_dice
@@ -16,6 +18,28 @@ from .schemas import (
 )
 
 api_router = APIRouter()
+
+async def cleanup_inactive_games():
+    while True:
+        try:
+            await asyncio.sleep(30) # run check every 30 seconds
+            now = time.time()
+            inactive_ids = []
+            for g_id, game in list(games.items()):
+                # Check if last interaction was more than 5 minutes (300 seconds) ago
+                if now - game.last_interaction > 300:
+                    inactive_ids.append(g_id)
+            
+            for g_id in inactive_ids:
+                if g_id in games:
+                    del games[g_id]
+                    print(f"[CLEANUP] Automatically deleted inactive game session {g_id} (no activity for 5 minutes)")
+        except Exception as e:
+            print(f"[CLEANUP ERROR] Failed cleaning inactive games: {e}")
+
+@api_router.on_event("startup")
+async def startup_event():
+    asyncio.create_task(cleanup_inactive_games())
 
 @api_router.get(
     "/",
