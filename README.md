@@ -1,77 +1,81 @@
 # Snake and Ladder Multiplayer
 
-A clean, modern digital version of the classic Snake and Ladder board game. It supports both local offline pass-and-play and online real-time multiplayer lobbies.
+A web-based digital implementation of the classic Snake and Ladder board game. The application supports offline local play and real-time online multiplayer lobbies.
 
 ---
 
-## Key Features
+## Architecture Overview
 
-* **Two Game Modes**:
-  * **Offline (Local)**: Play locally with 1 to 4 players and type in custom names.
-  * **Online (Multiplayer)**: Host or join games on the server for 2 to 4 players using simple room codes.
-* **Modern Design & Visuals**:
-  * Clean dark-mode colors and smooth scaling to fit desktop and mobile screens.
-  * Step-by-step token walking animations and sliding movements for snakes and ladders.
-* **Interactive Elements**:
-  * **Dice Roller**: Animated dice roll with sounds. The dice rolls for at least 1 second so players can enjoy the anticipation.
-  * **Hover Predictions**: Hovering shows you where you will land for rolls 2 through 6, highlighting snakes (red) and ladders (green).
-  * **Selective Mute**: Turn off board action sounds (like stepping and sliding) while keeping button clicks and dice rolls active.
-  * **Nickname Generator**: Suggests random funny gaming names when setting up online games, which you can easily customize.
+The system is split into two main components:
+* **Frontend**: Next.js client application written in TypeScript and styled with Tailwind CSS. It handles user inputs, board rendering, scaling logic, and animations.
+* **Backend**: FastAPI web server in Python. It manages concurrent game lobbies, keeps track of active game states in memory, generates dice rolls, and validates player turns.
 
 ---
 
-## Online Security & Authoritative Backend (100% Fair Play)
+## Core Features
 
-The online multiplayer system is designed to be completely fair and cheat-proof. All game calculations happen on the server, not on your device:
+* **Game Modes**:
+  * **Offline Mode**: Supports 1 to 4 local players using local state management.
+  * **Online Mode**: Supports 2 to 4 players. Lobbies are created on the server and joined using generated room codes.
+* **Responsive Visuals**:
+  * Auto-scaling layout container driven by `ResizeObserver` to fit various viewport dimensions.
+  * Cell-by-cell token transitions and linear slide animations for snakes and ladders.
+* **UI Interactions**:
+  * **Dice Roller**: Animation wrapper that runs for a minimum of 1 second to ensure rolling duration feedback.
+  * **Hover Predictions**: Highlights cells for potential rolls [2-6] to show landing outcomes, including snakes (red) and ladders (green).
+  * **Sound Control**: Independent volume toggles that mute board actions (stepping, sliding, winning) while keeping general UI audio triggers active.
+  * **Nickname Suggestions**: Automatically assigns a random short name on lobby entry, which users can customize.
 
-* **Server-Run Game Loop**: The actual positions of players, the current turn, and the game status are stored and updated on the backend server.
-* **Server-Side Dice Rolls**: When you roll, the server generates the dice value. The client device never chooses the roll value.
-* **Zero Client-Side Cheat Control**:
-  * The frontend is only used to display the board and take inputs.
-  * The server verifies every action (for example, checking if it is actually your turn or verifying if you rolled a 6 to start).
-  * Because the game state is not controlled by the client, memory editing tools (like Cheat Engine) or modified client requests cannot be used to cheat.
+---
 
-* **Automatic Room Cleanup**: To manage memory efficiently, the server keeps track of activity. If an online room goes 5 minutes without any player rolling the dice or joining, a background loop automatically deletes that game room and player instances, logging the action in the console.
-* **Game Completion Lock**: When a player reaches cell 100, the game is marked as completed. The server blocks all subsequent roll and join requests, and stops updating the last interaction time. This freezes the game until it is automatically deleted by the cleanup loop after 5 minutes of inactivity.
+## Security Model
+
+The online multiplayer mode uses a server-authoritative design to ensure fair play:
+
+* **Server-Authoritative State**: All critical game data, including player positions, turn sequences, and validation flags, are stored and updated on the backend server.
+* **Server-Side Roll Generation**: Dice values are generated on the server. The client cannot inject or send roll values.
+* **Input Validation**: The server validates all incoming player actions. Requests made out of turn, or rolls on completed games, are rejected.
+* **Session Lifecycle**:
+  * **Room Expiration**: Every join or roll action updates the room's `last_interaction` timestamp. An asynchronous background task checks the rooms list every 30 seconds and purges any session that has been inactive for more than 5 minutes.
+  * **Completion Lock**: Once a player reaches cell 100, the game is flagged as completed. The server blocks all subsequent actions for that session and stops updating the interaction timestamp, letting the session expire and clean up automatically.
 
 ---
 
 ## Technology Stack
 
-### Frontend
-* **Core**: React, Next.js (App Router), TypeScript.
-* **Styling**: Tailwind CSS.
-* **Icons**: Lucide React.
-* **Sound**: HTML5 Audio preloaded in the browser.
+### Client (Frontend)
+* **Framework**: React, Next.js (App Router), TypeScript.
+* **CSS Framework**: Tailwind CSS.
+* **Asset Libraries**: Lucide React.
+* **Audio Player**: Preloaded HTML5 Audio API client wrapper.
 
-### Backend
-* **Core**: Python 3, FastAPI.
-* **Validation**: Pydantic.
+### Server (Backend)
+* **Framework**: Python 3, FastAPI.
+* **Data Validation**: Pydantic.
 * **Web Server**: Uvicorn.
-* **State**: Thread-safe in-memory room store.
+* **Concurrency**: Thread-safe in-memory room store.
 
 ---
 
 ## Game Rules
 
-1. **Board**: A 10x10 grid from cell 1 to 100.
-2. **Start**: All players start off the board (at cell 0). You must roll a 6 to enter cell 1.
-3. **Movement**: Tokens walk cell-by-cell so players can see their path.
-4. **Snakes & Ladders**:
-   * Landing on a **Ladder** climbs you up to a higher cell.
-   * Landing on a **Snake** slides you down to a lower cell.
-5. **Winning**: You must land exactly on cell 100 to win. If you roll more than needed, your token stays put and the turn passes.
+1. **Board Layout**: A 10x10 grid from cell 1 to 100.
+2. **Game Entry**: Players begin off-board (position 0). A player must roll a 6 to enter the board at cell 1.
+3. **Snakes & Ladders**:
+   * Landing on a Ladder moves the player to a designated higher cell.
+   * Landing on a Snake moves the player to a designated lower cell.
+4. **Victory Condition**: A player must reach cell 100 with an exact dice roll. If the roll value exceeds the remaining distance, the token remains stationary and the turn is passed.
 
 ---
 
-## Installation & Setup
+## Installation and Setup
 
 ### Prerequisites
 * **Node.js** (v18+)
 * **Python** (v3.10+)
 
 ### 1. Backend Setup
-1. Open the backend directory:
+1. Navigate to the backend directory:
    ```bash
    cd backend
    ```
@@ -83,26 +87,26 @@ The online multiplayer system is designed to be completely fair and cheat-proof.
    ```bash
    python -m uvicorn app.main:app --reload --port 8000
    ```
-   API docs will be available at `http://127.0.0.1:8000/docs`.
+   The API documentation will be available at `http://127.0.0.1:8000/docs`.
 
 ### 2. Frontend Setup
-1. Open the frontend directory:
+1. Navigate to the frontend directory:
    ```bash
    cd ../frontend
    ```
-2. Install Node packages:
+2. Install packages:
    ```bash
    npm install
    ```
-3. Create a `.env` file in the `frontend` folder with the server URL:
+3. Create a `.env` file in the frontend folder containing the server URL:
    ```env
    NEXT_PUBLIC_API_URL=http://localhost:8000
    ```
-4. Run the frontend:
+4. Start the frontend:
    ```bash
    npm run dev
    ```
-   Open `http://localhost:3000` in your browser.
+   Access the application in your browser at `http://localhost:3000`.
 
 ---
 
@@ -112,13 +116,13 @@ The online multiplayer system is designed to be completely fair and cheat-proof.
 ├── backend/
 │   ├── app/
 │   │   ├── routes/
-│   │   │   ├── __init__.py     # API endpoints (Lobby and Roll handlers)
-│   │   │   ├── schemas.py      # Validation schemas
-│   │   │   └── utils.py        # Dice utility
+│   │   │   ├── __init__.py     # API endpoints and lifecycle cleanup task
+│   │   │   ├── schemas.py      # Request/response validation schemas
+│   │   │   └── utils.py        # Dice rolling utility and process movement
 │   │   ├── utils/
-│   │   │   └── game.py         # Game instance logic
-│   │   └── main.py             # FastAPI entrypoint
-│   └── requirements.txt        # Backend packages
+│   │   │   └── game.py         # Memory state and core game loop structure
+│   │   └── main.py             # FastAPI entrypoint and CORS middleware
+│   └── requirements.txt        # Python backend packages
 │
 └── frontend/
     ├── app/
@@ -126,11 +130,11 @@ The online multiplayer system is designed to be completely fair and cheat-proof.
     │   ├── _store/             # Local offline state management
     │   ├── _utils/             # Sound player
     │   ├── play/
-    │   │   ├── offline/        # Local play screen
-    │   │   └── online/         # Online play screen
-    │   ├── globals.css         # CSS
+    │   │   ├── offline/        # Local offline play screen
+    │   │   └── online/         # Online multiplayer play screen
+    │   ├── globals.css         # Styling rules
     │   └── page.tsx            # Main Landing page
     └── lib/
-        ├── api.ts              # Axios client config
-        └── game.ts             # API caller functions
+        ├── api.ts              # Axios configuration
+        └── game.ts             # API client functions
 ```
