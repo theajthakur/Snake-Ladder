@@ -17,6 +17,7 @@ import React, { useEffect } from 'react'
 import { PLAYERS } from '@/app/data/players'
 import PlayerToken from '@/app/_components/PlayerToken'
 import type { GamePlayer } from '@/app/_store/gameStore'
+import { Dices } from 'lucide-react'
 
 // ── Dot positions per face (0-1 fractions of 100×100 viewBox) ───────────────
 const DOTS: Record<number, [number, number][]> = {
@@ -138,11 +139,12 @@ export default function DiceRoller({
   return (
     <div
       style={{ borderColor: `${config.color}44` }}
-      className="fixed right-4 top-1/2 -translate-y-1/2 z-50 w-40 flex flex-col items-center bg-secondary-900 border border-secondary-700 rounded-2xl overflow-hidden shadow-md"
+      className="fixed right-4 bottom-4 z-50 w-40 flex flex-col items-center bg-secondary-900 border border-secondary-700 rounded-2xl overflow-hidden shadow-md"
     >
       {/* ── Header ── */}
-      <div className="w-full py-2.5 px-3.5 border-b border-secondary-800 text-[0.6rem] font-bold tracking-wider uppercase text-secondary-500 flex items-center gap-1.5 box-border">
-        🎲 Dice
+      <div className="w-full py-2.5 px-3.5 border-b border-secondary-800 text-[0.6rem] font-black tracking-widest uppercase text-secondary-400 flex items-center gap-1.5 box-border select-none">
+        <Dices size={12} className="text-secondary-500" />
+        <span>Dice</span>
       </div>
 
       {/* ── Current player ── */}

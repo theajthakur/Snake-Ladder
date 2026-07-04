@@ -3,6 +3,10 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import PlayerToken from '@/app/_components/PlayerToken'
+import GamingButton from '@/app/_components/GamingButton'
+import GamingModeButton from '@/app/_components/GamingModeButton'
+import OfflineSetup from '@/app/_components/OfflineSetup'
+import { Gamepad2, Globe, AlertTriangle, RotateCw } from 'lucide-react'
 import { PLAYERS } from '@/app/data/players'
 import { createNewGame, saveGameState, type GamePlayer } from '@/app/_store/gameStore'
 import {
@@ -158,8 +162,12 @@ export default function LandingPage() {
         {/* ── STEP 0: Welcome Screen ── */}
         {step === 0 && (
           <div className="flex-1 flex flex-col justify-between">
-            <div className="text-center mt-6">
-              <div className="text-5xl mb-4">🐍🎲</div>
+            <div className="text-center mt-6 flex flex-col items-center">
+              <img
+                src="/logo.png"
+                alt="Snake & Ladder Logo"
+                className="w-[100px] h-[100px] mb-4 object-contain rounded-2xl border border-secondary-700 shadow-md select-none pointer-events-none"
+              />
               <h1 className="text-2xl font-black tracking-tight text-secondary-100">
                 Snake &amp; Ladder
               </h1>
@@ -167,20 +175,22 @@ export default function LandingPage() {
                 Roll the dice, avoid the snakes, and climb to the top. Play local offline matches or connect online with other players.
               </p>
             </div>
-            <button
+            <GamingButton
               onClick={() => setStep(1)}
-              className="w-full py-4 mt-8 bg-primary-600 hover:bg-primary-500 text-white text-sm font-bold tracking-wider rounded-xl cursor-pointer transition-colors border-0"
+              size="lg"
+              theme="golden"
+              className="w-full mt-8"
             >
               Get Started
-            </button>
+            </GamingButton>
           </div>
         )}
 
         {/* ── STEP 1: Mode Selection ── */}
         {step === 1 && (
           <div className="flex-1 flex flex-col justify-between">
-            <div className="text-center mt-6">
-              <div className="text-4xl mb-3">🎮</div>
+            <div className="text-center mt-6 flex flex-col items-center">
+              <Gamepad2 size={40} className="text-primary-500 mb-3" />
               <h1 className="text-xl font-black tracking-tight text-secondary-100">
                 Select Game Mode
               </h1>
@@ -190,137 +200,50 @@ export default function LandingPage() {
             </div>
             
             <div className="flex flex-col gap-3 my-auto">
-              <button
+              <GamingModeButton
                 onClick={() => setStep(2)}
-                className="w-full py-3.5 bg-secondary-900 border border-secondary-700 hover:border-secondary-600 rounded-xl cursor-pointer text-left px-5 flex items-center justify-between transition-colors group"
-              >
-                <div>
-                  <span className="block text-xs font-bold text-secondary-200">Local Offline</span>
-                  <span className="text-[0.65rem] text-secondary-400">Play locally with friends on this screen</span>
-                </div>
-                <span className="text-xs text-secondary-500 group-hover:text-secondary-300">▶</span>
-              </button>
+                title="Local Offline"
+                description="Play locally with friends on this screen"
+                theme="classic"
+              />
               
-              <button
+              <GamingModeButton
                 onClick={() => setStep(3)}
-                className="w-full py-3.5 bg-secondary-900 border border-secondary-700 hover:border-secondary-600 rounded-xl cursor-pointer text-left px-5 flex items-center justify-between transition-colors group"
-              >
-                <div>
-                  <span className="block text-xs font-bold text-secondary-200">Online Multiplayer</span>
-                  <span className="text-[0.65rem] text-secondary-400">Connect and host/join server rooms</span>
-                </div>
-                <span className="text-xs text-secondary-500 group-hover:text-secondary-300">▶</span>
-              </button>
+                title="Online Multiplayer"
+                description="Connect and host/join server rooms"
+                theme="classic"
+              />
             </div>
 
-            <button
+            <GamingButton
               onClick={() => setStep(0)}
-              className="w-full py-3 text-xs font-semibold text-secondary-400 hover:text-secondary-200 bg-transparent border-0 cursor-pointer"
+              theme="classic"
+              size="sm"
+              className="w-full mt-4"
             >
               Back
-            </button>
+            </GamingButton>
           </div>
         )}
 
         {/* ── STEP 2: Offline Configuration ── */}
         {step === 2 && (
-          <div className="flex-1 flex flex-col justify-between">
-            <div>
-              <div className="text-center mb-6">
-                <h1 className="text-lg font-black text-secondary-100">Offline Setup</h1>
-                <p className="text-[0.7rem] text-secondary-400">Choose player count and names</p>
-              </div>
-
-              {/* Player Count */}
-              <div className="mb-5">
-                <div className="flex gap-2.5">
-                  {COUNT_OPTIONS.map((n) => {
-                    const isSelected = n === selectedCount
-                    const accent = PLAYERS[n - 1].color
-                    return (
-                      <button
-                        key={n}
-                        onClick={() => setSelectedCount(n)}
-                        style={{
-                          borderColor: isSelected ? accent : undefined,
-                          backgroundColor: isSelected ? `${accent}18` : undefined,
-                          color: isSelected ? accent : undefined,
-                        }}
-                        className={`flex-1 py-2 px-1 rounded-xl border text-center font-bold transition-all flex flex-col items-center gap-1 cursor-pointer ${
-                          isSelected
-                            ? 'border-2 shadow-sm'
-                            : 'border-secondary-700 bg-secondary-900/50 text-secondary-400 hover:border-secondary-600'
-                        }`}
-                      >
-                        <PlayerToken playerId={(n - 1) as 0 | 1 | 2 | 3} size={24} />
-                        <span className="text-[0.65rem] font-bold">{n} P</span>
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-
-              {/* Names */}
-              <div className="mb-5">
-                <div className="flex items-center justify-between mb-2">
-                  <label className="text-[0.6rem] font-bold tracking-wider uppercase text-secondary-500">
-                    Names
-                  </label>
-                  <button
-                    onClick={handleSkipAll}
-                    className="bg-transparent border border-secondary-700 hover:border-secondary-600 rounded px-2 py-0.5 text-secondary-400 hover:text-secondary-200 text-[0.62rem] cursor-pointer"
-                  >
-                    Skip All
-                  </button>
-                </div>
-                <div className="flex flex-col gap-2 max-h-[140px] overflow-y-auto">
-                  {Array.from({ length: selectedCount }, (_, i) => {
-                    const config = PLAYERS[i]
-                    return (
-                      <div
-                        key={i}
-                        className="flex items-center gap-2.5 bg-secondary-900/40 border border-secondary-700 focus-within:border-secondary-600 rounded-xl px-3 py-1.5 transition-colors"
-                      >
-                        <PlayerToken playerId={i as 0 | 1 | 2 | 3} size={22} />
-                        <input
-                          type="text"
-                          maxLength={20}
-                          value={names[i]}
-                          placeholder={config.name}
-                          onChange={(e) => setName(i, e.target.value)}
-                          onKeyDown={(e) => e.key === 'Enter' && handleLaunchOffline()}
-                          style={{ caretColor: config.color }}
-                          className="flex-1 bg-transparent border-0 outline-none text-white text-xs font-semibold"
-                        />
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex gap-2 mt-4">
-              <button
-                onClick={() => setStep(1)}
-                className="flex-1 py-3 text-xs font-bold bg-secondary-750 hover:bg-secondary-700 text-secondary-300 rounded-xl cursor-pointer border-0"
-              >
-                Back
-              </button>
-              <button
-                onClick={handleLaunchOffline}
-                className="flex-1 py-3 text-xs font-bold bg-primary-600 hover:bg-primary-500 text-white rounded-xl cursor-pointer border-0"
-              >
-                Launch Game
-              </button>
-            </div>
-          </div>
+          <OfflineSetup
+            selectedCount={selectedCount}
+            setSelectedCount={setSelectedCount}
+            names={names}
+            setName={setName}
+            handleSkipAll={handleSkipAll}
+            handleLaunch={handleLaunchOffline}
+            onBack={() => setStep(1)}
+          />
         )}
 
         {/* ── STEP 3: Online Choice ── */}
         {step === 3 && (
           <div className="flex-1 flex flex-col justify-between">
-            <div className="text-center mt-6">
-              <div className="text-4xl mb-3">🌐</div>
+            <div className="text-center mt-6 flex flex-col items-center">
+              <Globe size={40} className="text-primary-500 mb-3" />
               <h1 className="text-xl font-black tracking-tight text-secondary-100">
                 Online Multiplayer
               </h1>
@@ -330,35 +253,29 @@ export default function LandingPage() {
             </div>
 
             <div className="flex flex-col gap-3 my-auto">
-              <button
+              <GamingModeButton
                 onClick={() => setStep(4)}
-                className="w-full py-3.5 bg-secondary-900 border border-secondary-700 hover:border-secondary-600 rounded-xl cursor-pointer text-left px-5 flex items-center justify-between transition-colors group"
-              >
-                <div>
-                  <span className="block text-xs font-bold text-secondary-200">Create Room</span>
-                  <span className="text-[0.65rem] text-secondary-400">Initialize a new lobby session</span>
-                </div>
-                <span className="text-xs text-secondary-500 group-hover:text-secondary-300">▶</span>
-              </button>
+                title="Create Room"
+                description="Initialize a new lobby session"
+                theme="classic"
+              />
 
-              <button
+              <GamingModeButton
                 onClick={() => setStep(5)}
-                className="w-full py-3.5 bg-secondary-900 border border-secondary-700 hover:border-secondary-600 rounded-xl cursor-pointer text-left px-5 flex items-center justify-between transition-colors group"
-              >
-                <div>
-                  <span className="block text-xs font-bold text-secondary-200">Join Room</span>
-                  <span className="text-[0.65rem] text-secondary-400">Connect to an invite lobby</span>
-                </div>
-                <span className="text-xs text-secondary-500 group-hover:text-secondary-300">▶</span>
-              </button>
+                title="Join Room"
+                description="Connect to an invite lobby"
+                theme="classic"
+              />
             </div>
 
-            <button
+            <GamingButton
               onClick={() => setStep(1)}
-              className="w-full py-3 text-xs font-semibold text-secondary-400 hover:text-secondary-200 bg-transparent border-0 cursor-pointer"
+              theme="classic"
+              size="sm"
+              className="w-full mt-4"
             >
               Back
-            </button>
+            </GamingButton>
           </div>
         )}
 
@@ -372,8 +289,9 @@ export default function LandingPage() {
               </div>
 
               {errorMsg && (
-                <div className="mb-4 p-2.5 text-[0.7rem] bg-primary-950/20 border border-primary-800/40 text-primary-400 rounded-lg font-bold">
-                  ⚠️ {errorMsg}
+                <div className="mb-4 p-2.5 text-[0.7rem] bg-primary-950/20 border border-primary-800/40 text-primary-400 rounded-lg font-bold flex items-center gap-1.5">
+                  <AlertTriangle size={11} className="shrink-0" />
+                  <span>{errorMsg}</span>
                 </div>
               )}
 
@@ -415,21 +333,25 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="flex gap-2 mt-4">
-              <button
+            <div className="flex gap-2.5 mt-4">
+              <GamingButton
                 disabled={loading}
                 onClick={() => { setErrorMsg(null); setStep(3) }}
-                className="flex-1 py-3 text-xs font-bold bg-secondary-750 hover:bg-secondary-700 text-secondary-300 rounded-xl cursor-pointer border-0 disabled:opacity-50"
+                theme="classic"
+                size="lg"
+                className="flex-1"
               >
                 Back
-              </button>
-              <button
+              </GamingButton>
+              <GamingButton
                 disabled={loading}
                 onClick={handleCreateRoom}
-                className="flex-1 py-3 text-xs font-bold bg-primary-600 hover:bg-primary-500 text-white rounded-xl cursor-pointer border-0 disabled:opacity-50"
+                theme="primary"
+                size="lg"
+                className="flex-1"
               >
                 {loading ? 'Creating...' : 'Create & Join'}
-              </button>
+              </GamingButton>
             </div>
           </div>
         )}
@@ -444,8 +366,9 @@ export default function LandingPage() {
               </div>
 
               {errorMsg && (
-                <div className="mb-4 p-2.5 text-[0.7rem] bg-primary-950/20 border border-primary-800/40 text-primary-400 rounded-lg font-bold">
-                  ⚠️ {errorMsg}
+                <div className="mb-4 p-2.5 text-[0.7rem] bg-primary-950/20 border border-primary-800/40 text-primary-400 rounded-lg font-bold flex items-center gap-1.5">
+                  <AlertTriangle size={11} className="shrink-0" />
+                  <span>{errorMsg}</span>
                 </div>
               )}
 
@@ -479,21 +402,25 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="flex gap-2 mt-4">
-              <button
+            <div className="flex gap-2.5 mt-4">
+              <GamingButton
                 disabled={loading}
                 onClick={() => { setErrorMsg(null); setStep(3) }}
-                className="flex-1 py-3 text-xs font-bold bg-secondary-750 hover:bg-secondary-700 text-secondary-300 rounded-xl cursor-pointer border-0 disabled:opacity-50"
+                theme="classic"
+                size="lg"
+                className="flex-1"
               >
                 Back
-              </button>
-              <button
+              </GamingButton>
+              <GamingButton
                 disabled={loading}
                 onClick={handleJoinRoom}
-                className="flex-1 py-3 text-xs font-bold bg-primary-600 hover:bg-primary-500 text-white rounded-xl cursor-pointer border-0 disabled:opacity-50"
+                theme="primary"
+                size="lg"
+                className="flex-1"
               >
                 {loading ? 'Joining...' : 'Join Room'}
-              </button>
+              </GamingButton>
             </div>
           </div>
         )}
@@ -559,19 +486,24 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="flex gap-2 mt-6">
-              <button
+            <div className="flex gap-2.5 mt-6">
+              <GamingButton
                 onClick={() => setStep(3)}
-                className="flex-1 py-3 text-xs font-bold bg-secondary-750 hover:bg-secondary-700 text-secondary-300 rounded-xl cursor-pointer border-0"
+                theme="classic"
+                size="lg"
+                className="flex-1"
               >
                 Leave
-              </button>
-              <button
+              </GamingButton>
+              <GamingButton
                 onClick={refreshLobby}
-                className="flex-1 py-3 text-xs font-bold bg-primary-600 hover:bg-primary-500 text-white rounded-xl cursor-pointer border-0 flex items-center justify-center gap-2"
+                theme="primary"
+                size="lg"
+                className="flex-1 gap-2"
               >
-                🔄 Refresh
-              </button>
+                <RotateCw size={12} />
+                <span>Refresh</span>
+              </GamingButton>
             </div>
           </div>
         )}

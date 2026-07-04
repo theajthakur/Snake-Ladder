@@ -3,12 +3,13 @@
 /**
  * PredictionPanel.tsx
  *
- * Fixed right-side panel (positioned at bottom-right or under highlight input)
- * that shows the ladders or snakes in range [2, 6] for the active player.
+ * Compact top-right gaming panel showing upcoming traps (snakes) and climbers (ladders)
+ * in range [2, 6] for the active player.
  */
 import React from 'react'
 import type { BoardPrediction } from '@/app/_components/BoardGrid'
 import { PLAYERS } from '@/app/data/players'
+import { Sparkles, Dice5, ArrowUpRight, ArrowDownRight } from 'lucide-react'
 
 interface PredictionPanelProps {
   predictions: BoardPrediction[]
@@ -22,17 +23,25 @@ export default function PredictionPanel({
   const activeColor = PLAYERS[activePlayerId].color
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 w-60 bg-secondary-900 border border-secondary-700 rounded-2xl overflow-hidden shadow-sm">
-      {/* Header */}
-      <div className="py-2.5 px-3.5 border-b border-secondary-800 text-[0.6rem] font-bold tracking-wider uppercase text-secondary-500 flex items-center gap-1.5 box-border">
-        🔮 Turn Predictions (Range 2–6)
+    <div className="fixed top-4 right-4 z-50 w-48 bg-secondary-900/90 backdrop-blur-md border border-secondary-750 rounded-xl overflow-hidden shadow-lg select-none">
+      {/* Sleek Gaming Header */}
+      <div className="py-1.5 px-2.5 border-b border-secondary-800 text-[0.55rem] font-black tracking-widest uppercase text-secondary-400 flex items-center justify-between box-border">
+        <span className="flex items-center gap-1.5">
+          <Sparkles size={11} className="text-secondary-400" />
+          <span>Predictions</span>
+        </span>
+        {/* Neon Active Pulse */}
+        <span className="flex h-2 w-2 relative">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
       </div>
 
-      {/* Body List */}
-      <div className="p-3 flex flex-col gap-2 max-h-40 overflow-y-auto box-border">
+      {/* Predictions Body */}
+      <div className="p-2 flex flex-col gap-1.5 max-h-44 overflow-y-auto box-border">
         {predictions.length === 0 ? (
-          <div className="text-xs text-secondary-500 text-center py-3 italic">
-            No immediate danger/success cells in range (2–6)
+          <div className="text-[0.6rem] text-secondary-500 text-center py-2.5 italic">
+            Safe path ahead (2–6)
           </div>
         ) : (
           predictions.map((p) => {
@@ -44,37 +53,45 @@ export default function PredictionPanel({
             return (
               <div
                 key={p.diceValue}
-                className={`flex flex-col gap-1 border rounded-lg p-2.5 shadow-sm transition-transform duration-200 ${
-                  isLadder
-                    ? 'bg-accent-950/20 border-accent-800/30'
-                    : 'bg-primary-950/20 border-primary-800/30'
-                }`}
+                style={{
+                  borderColor: isLadder ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                  backgroundColor: isLadder ? 'rgba(16, 185, 129, 0.04)' : 'rgba(239, 68, 68, 0.04)'
+                }}
+                className="flex flex-col gap-0.5 border rounded-lg p-1.5 transition-all duration-200"
               >
-                {/* Roll & Cell info */}
+                {/* Roll & Land Info */}
                 <div className="flex items-center justify-between">
                   <span
-                    className={`text-xs font-black font-sans ${
-                      isLadder ? 'text-accent-400' : 'text-primary-400'
+                    className={`text-[0.6rem] font-black tracking-wider flex items-center gap-1 ${
+                      isLadder ? 'text-emerald-400' : 'text-primary-400'
                     }`}
                   >
-                    🎲 Roll {p.diceValue}
+                    <Dice5 size={10} className="opacity-70" />
+                    <span>Roll {p.diceValue}</span>
                   </span>
-                  <span className="text-[0.62rem] font-bold text-secondary-400 bg-secondary-800 px-1 py-0.5 rounded">
-                    Land: {p.targetCell}
+                  <span className="text-[0.5rem] font-bold text-secondary-400 bg-secondary-850 px-1 rounded-sm">
+                    Cell {p.targetCell}
                   </span>
                 </div>
 
                 {/* Outcome */}
-                <div className="text-[0.7rem] text-secondary-200 flex items-center justify-between font-sans">
-                  <span>
-                    {isLadder ? '🪜 Climb to ' : '🐍 Slide to '}
-                    <strong className="text-white text-xs font-extrabold">
+                <div className="text-[0.58rem] text-secondary-300 flex items-center justify-between font-sans leading-none mt-0.5">
+                  <span className="flex items-center gap-1">
+                    {isLadder ? (
+                      <ArrowUpRight size={10} className="text-emerald-500" strokeWidth={3} />
+                    ) : (
+                      <ArrowDownRight size={10} className="text-primary-500" strokeWidth={3} />
+                    )}
+                    <span className="text-[0.52rem] text-secondary-500 font-bold uppercase mr-0.5">
+                      {isLadder ? 'Climb to' : 'Slide to'}
+                    </span>
+                    <strong className="text-secondary-100 font-extrabold text-[0.62rem]">
                       {p.resolvedCell}
                     </strong>
                   </span>
                   <span
                     className={`font-black ${
-                      isLadder ? 'text-accent-400' : 'text-primary-400'
+                      isLadder ? 'text-emerald-400' : 'text-primary-400'
                     }`}
                   >
                     {isLadder ? `+${diff}` : `-${diff}`}

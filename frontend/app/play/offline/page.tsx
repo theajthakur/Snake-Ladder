@@ -29,13 +29,14 @@ import { resolveCell, snakeMap, ladderMap } from '@/app/data/boardData'
 import BoardBackground from '@/app/_components/BoardBackground'
 import BoardGrid, { type BoardPrediction } from '@/app/_components/BoardGrid'
 import PlayerPanel from '@/app/_components/PlayerPanel'
-import CellHighlightInput from '@/app/_components/CellHighlightInput'
 import CurrentTurnDisplay from '@/app/_components/CurrentTurnDisplay'
 import DiceRoller from '@/app/_components/DiceRoller'
 import SlidingToken from '@/app/_components/SlidingToken'
 import PredictionPanel from '@/app/_components/PredictionPanel'
 import { soundManager } from '@/app/_utils/sound'
 import SoundToggleButton from '@/app/_components/SoundToggleButton'
+import GamingButton from '@/app/_components/GamingButton'
+import { Trophy } from 'lucide-react'
 
 
 // ── Timing constants ─────────────────────────────────────────────────────────
@@ -56,7 +57,6 @@ export default function OfflinePlayPage() {
   const containerRef = useRef<HTMLDivElement>(null)
 
   const [gridRect, setGridRect] = useState<ContainRect | null>(null)
-  const [highlight, setHighlight] = useState<number | null>(null)
   const [gameState, setGameState] = useState<GameState | null>(null)
   const [winner, setWinner] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -83,6 +83,15 @@ export default function OfflinePlayPage() {
   useEffect(() => {
     if (gameState) saveGameState(gameState)
   }, [gameState])
+
+  // ── Dice rolling sound control ─────────────────────────────────────────────
+  useEffect(() => {
+    if (diceRolling) {
+      soundManager.playDiceRoll()
+    } else {
+      soundManager.stopDiceRoll()
+    }
+  }, [diceRolling])
 
   // ── Slide done callback ───────────────────────────────────────────────────
   const handleSlideDone = useCallback(() => {
@@ -236,7 +245,6 @@ export default function OfflinePlayPage() {
     >
       {/* ── Fixed UI — frozen until animation ends ── */}
       <PlayerPanel players={gameState.players} currentPlayerId={active.id} />
-      <CellHighlightInput onChange={setHighlight} />
       <SoundToggleButton />
       <CurrentTurnDisplay player={active} />
 
@@ -267,7 +275,6 @@ export default function OfflinePlayPage() {
       {gridRect && (
         <BoardGrid
           rect={gridRect}
-          highlight={highlight}
           positions={displayPositions}
           players={gameState.players}
           predictions={predictions}
@@ -287,17 +294,19 @@ export default function OfflinePlayPage() {
 
       {/* ── Win overlay ── */}
       {winner && (
-        <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-secondary-900/90 gap-5">
-          <div className="text-6xl">🏆</div>
-          <h2 className="m-0 text-3xl font-black text-primary-500 text-center font-sans">
+        <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-secondary-900/90 gap-5 select-none">
+          <Trophy size={64} className="text-[#FFD700] drop-shadow-[0_0_20px_rgba(255,215,0,0.4)] animate-bounce" />
+          <h2 className="m-0 text-3xl font-black text-primary-500 text-center font-sans tracking-wide uppercase">
             {winner} wins!
           </h2>
-          <button
+          <GamingButton
             onClick={() => router.push('/')}
-            className="mt-2 px-9 py-3.5 bg-primary-600 hover:bg-primary-500 text-white text-sm font-extrabold rounded-xl cursor-pointer shadow-sm transition-colors font-sans border-0"
+            theme="golden"
+            size="lg"
+            className="mt-2"
           >
-            🎮 New Game
-          </button>
+            New Game
+          </GamingButton>
         </div>
       )}
     </div>

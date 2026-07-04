@@ -10,6 +10,8 @@ class SoundManager {
       this.sounds.step = new Audio('/effects/moving-marker.wav');
       this.sounds.snake = new Audio('/effects/snake-bite.wav');
       this.sounds.win = new Audio('/effects/winner.wav');
+      this.sounds.click = new Audio('/effects/game-click.wav');
+      this.sounds.diceRoll = new Audio('/effects/rolling-dice.mp3');
 
       // Preload them explicitly
       Object.values(this.sounds).forEach(audio => {
@@ -28,7 +30,7 @@ class SoundManager {
     }
   }
 
-  public play(soundName: 'ladder' | 'firstSix' | 'step' | 'snake' | 'win') {
+  public play(soundName: 'ladder' | 'firstSix' | 'step' | 'snake' | 'win' | 'click') {
     if (this.muted) return;
     const audio = this.sounds[soundName];
     if (audio) {
@@ -45,8 +47,39 @@ class SoundManager {
     }
   }
 
+  public playDiceRoll() {
+    if (this.muted) return;
+    const audio = this.sounds.diceRoll;
+    if (audio) {
+      try {
+        audio.loop = true;
+        audio.currentTime = 0;
+        audio.play().catch(err => {
+          console.warn('Failed to play dice roll loop sound:', err);
+        });
+      } catch (e) {
+        console.error('Error playing dice roll loop sound:', e);
+      }
+    }
+  }
+
+  public stopDiceRoll() {
+    const audio = this.sounds.diceRoll;
+    if (audio) {
+      try {
+        audio.pause();
+        audio.currentTime = 0;
+      } catch (e) {
+        console.error('Error stopping dice roll loop sound:', e);
+      }
+    }
+  }
+
   public setMute(mute: boolean) {
     this.muted = mute;
+    if (mute) {
+      this.stopDiceRoll();
+    }
     try {
       localStorage.setItem('game_sound_muted', String(mute));
     } catch (e) {

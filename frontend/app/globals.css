@@ -31,8 +31,8 @@
   --color-accent-800: #40512c;
   --color-accent-900: #374427;
   
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-sans: var(--font-orbitron), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-orbitron), ui-monospace, SFMono-Regular, monospace;
 }
 
 body {
@@ -41,4 +41,19 @@ body {
   font-family: var(--font-sans);
   margin: 0;
   padding: 0;
+}
+
+html, body, button, a, input, select, textarea, [role="button"] {
+  cursor: url('/cursor_static.png'), auto;
+}
+
+.cursor-moving,
+.cursor-moving body,
+.cursor-moving button,
+.cursor-moving a,
+.cursor-moving input,
+.cursor-moving select,
+.cursor-moving textarea,
+.cursor-moving [role="button"] {
+  cursor: url('/cursor.png'), auto;
 }

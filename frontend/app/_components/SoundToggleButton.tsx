@@ -21,7 +21,7 @@ export default function SoundToggleButton() {
     <button
       onClick={handleToggle}
       title={muted ? 'Unmute game sounds' : 'Mute game sounds'}
-      className="fixed top-4 right-[184px] z-50 flex items-center justify-center bg-secondary-900 border border-secondary-700 hover:border-secondary-600 rounded-xl p-2.5 shadow-sm text-secondary-300 hover:text-secondary-100 cursor-pointer transition-all duration-200"
+      className="fixed top-4 right-[212px] z-50 flex items-center justify-center bg-secondary-900 border border-secondary-700 hover:border-secondary-600 rounded-xl p-2.5 shadow-sm text-secondary-300 hover:text-secondary-100 cursor-pointer transition-all duration-200"
     >
       {muted ? (
         <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
