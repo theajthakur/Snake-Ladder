@@ -39,17 +39,22 @@ export default function PlayerPanel({ players, currentPlayerId }: PlayerPanelPro
                 }`}
               >
                 {/* Token */}
-                <td className="p-2 pl-3.5 w-11 align-middle">
-                  <PlayerToken playerId={player.id} size={28} />
+                <td className="p-1 lg:p-2 pl-2 lg:pl-3.5 w-9 lg:w-11 align-middle">
+                  <div className="hidden lg:block">
+                    <PlayerToken playerId={player.id} size={28} />
+                  </div>
+                  <div className="block lg:hidden">
+                    <PlayerToken playerId={player.id} size={22} />
+                  </div>
                 </td>
 
                 {/* Name */}
-                <td className="p-2 pr-3.5 pl-1 align-middle">
+                <td className="p-1 lg:p-2 pr-2 lg:pr-3.5 pl-1 align-middle">
                   <span
                     style={{
                       color: isCurrent ? config.color : undefined,
                     }}
-                    className={`text-xs tracking-wide font-sans transition-colors duration-250 ${
+                    className={`text-[0.7rem] lg:text-xs tracking-wide font-sans transition-colors duration-250 ${
                       isCurrent ? 'font-extrabold' : 'font-semibold text-secondary-300'
                     }`}
                   >
@@ -58,9 +63,9 @@ export default function PlayerPanel({ players, currentPlayerId }: PlayerPanelPro
                 </td>
 
                 {/* "▶" active indicator */}
-                <td className="p-2 pr-2.5 pl-0 align-middle w-5 text-right">
+                <td className="p-1 lg:p-2 pr-2 lg:pr-2.5 pl-0 align-middle w-5 text-right">
                   {isCurrent && (
-                    <span style={{ color: config.color }} className="text-[0.7rem]">
+                    <span style={{ color: config.color }} className="text-[0.6rem] lg:text-[0.7rem]">
                       ▶
                     </span>
                   )}

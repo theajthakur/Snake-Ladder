@@ -238,72 +238,82 @@ export default function OfflinePlayPage() {
 
 
   return (
-    <div className="w-screen h-screen overflow-hidden m-0 p-0 bg-secondary-900 flex flex-row">
-      {/* ── Left main body: Board Container ── */}
-      <div
-        ref={containerRef}
-        className="flex-1 min-w-0 h-full relative flex items-center justify-center bg-secondary-950 p-4"
-      >
-        {/* Top-left controls: Sound toggle & Home button */}
-        <div className="absolute top-4 left-4 z-50 flex items-center gap-2">
+    <div className="w-screen h-screen overflow-hidden m-0 p-0 bg-secondary-900 flex flex-col lg:flex-row">
+      {/* ── Left/Upper body: Board Container ── */}
+      <div className="h-[60%] lg:h-full lg:flex-1 min-h-0 flex flex-col bg-secondary-950">
+        {/* Top controls header bar */}
+        <div className="h-14 w-full flex items-center px-4 gap-2 border-b border-secondary-900 shrink-0 select-none lg:absolute">
           <button
             onClick={() => router.push('/')}
             title="Go to Home"
-            className="flex items-center justify-center bg-secondary-900 border border-secondary-700 hover:border-secondary-600 rounded-xl p-2.5 shadow-sm text-secondary-300 hover:text-secondary-100 cursor-pointer transition-all duration-200"
+            className="flex items-center justify-center bg-secondary-900 border border-secondary-700 hover:border-secondary-600 rounded-xl p-2 shadow-sm text-secondary-300 hover:text-secondary-100 cursor-pointer transition-all duration-200"
           >
             <Home size={18} strokeWidth={2.5} />
           </button>
           <SoundToggleButton />
         </div>
 
-        {/* Board image */}
-        <BoardBackground
-          src="/bg.avif"
-          containerRef={containerRef}
-          onRectChange={setGridRect}
-        />
-
-        {/* Grid + stepped tokens */}
-        {gridRect && (
-          <BoardGrid
-            rect={gridRect}
-            positions={displayPositions}
-            players={gameState.players}
-            predictions={predictions}
+        {/* Board viewport */}
+        <div
+          ref={containerRef}
+          className="flex-1 min-h-0 relative flex items-center justify-center p-4"
+        >
+          {/* Board image */}
+          <BoardBackground
+            src="/bg.avif"
+            containerRef={containerRef}
+            onRectChange={setGridRect}
           />
-        )}
 
-        {/* Straight-line slide for snake / ladder */}
-        {visualState.type === 'sliding' && gridRect && (
-          <SlidingToken
-            playerId={visualState.playerId as 0 | 1 | 2 | 3}
-            fromCell={visualState.fromCell}
-            toCell={visualState.toCell}
-            rect={gridRect}
-            onDone={handleSlideDone}
-          />
-        )}
-      </div>
+          {/* Grid + stepped tokens */}
+          {gridRect && (
+            <BoardGrid
+              rect={gridRect}
+              positions={displayPositions}
+              players={gameState.players}
+              predictions={predictions}
+            />
+          )}
 
-      {/* ── Right side: Sidebar ── */}
-      <div className="w-80 h-full border-l border-secondary-800 bg-secondary-900 flex flex-col p-4 gap-4 overflow-y-auto select-none shrink-0 justify-between">
-        <div className="flex flex-col gap-4">
-          <PlayerPanel players={gameState.players} currentPlayerId={active.id} />
-          
-          {!winner && (
-            <DiceRoller
-              currentPlayer={active}
-              value={diceValue}
-              rolling={diceRolling}
-              onRoll={handleRoll}
-              disabled={busy}
+          {/* Straight-line slide for snake / ladder */}
+          {visualState.type === 'sliding' && gridRect && (
+            <SlidingToken
+              playerId={visualState.playerId as 0 | 1 | 2 | 3}
+              fromCell={visualState.fromCell}
+              toCell={visualState.toCell}
+              rect={gridRect}
+              onDone={handleSlideDone}
             />
           )}
         </div>
+      </div>
 
-        <div className="flex flex-col gap-4 mt-auto">
+      {/* ── Right/Lower side: Sidebar / Panel ── */}
+      <div className="h-[40%] lg:h-full lg:w-80 border-t lg:border-t-0 lg:border-l border-secondary-800 bg-secondary-900 p-3 lg:p-4 select-none shrink-0 overflow-y-auto">
+        <div className="w-full h-full grid grid-cols-2 grid-rows-[auto_1fr] lg:flex lg:flex-col gap-3 lg:gap-4">
+          {/* Player list (Top Right on mobile, Top on desktop) */}
+          <div className="col-start-2 row-start-1 lg:order-1 lg:col-start-auto lg:row-start-auto">
+            <PlayerPanel players={gameState.players} currentPlayerId={active.id} />
+          </div>
+
+          {/* Dice thrower (Left on mobile, Middle on desktop) */}
           {!winner && (
-            <PredictionPanel predictions={predictions} activePlayerId={active.id} />
+            <div className="col-start-1 row-start-1 row-span-2 lg:order-2 lg:col-start-auto lg:row-start-auto lg:row-span-1">
+              <DiceRoller
+                currentPlayer={active}
+                value={diceValue}
+                rolling={diceRolling}
+                onRoll={handleRoll}
+                disabled={busy}
+              />
+            </div>
+          )}
+
+          {/* Predictions (Bottom Right on mobile, Bottom on desktop) */}
+          {!winner && (
+            <div className="col-start-2 row-start-2 lg:order-3 lg:col-start-auto lg:row-start-auto">
+              <PredictionPanel predictions={predictions} activePlayerId={active.id} />
+            </div>
           )}
         </div>
       </div>
