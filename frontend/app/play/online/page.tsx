@@ -49,6 +49,15 @@ const GAMING_NAMES = [
   'NovaRacer', 'DeltaDash', 'RogueDie', 'VoltGrip'
 ]
 
+const LOSER_QUOTES = [
+  "Better luck next time! Keep climbing!",
+  "Every fall is a chance to climb higher!",
+  "The snakes are tricky, but you will conquer them next time!",
+  "So close! You'll get them in the next game!",
+  "GG! The ladders are waiting for your comeback!",
+  "Don't lose heart! The next roll could be your 6!"
+]
+
 function OnlinePlayContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -59,6 +68,7 @@ function OnlinePlayContent() {
   const [gridRect, setGridRect] = useState<ContainRect | null>(null)
   const [gameState, setGameState] = useState<GameState | null>(null)
   const [winner, setWinner] = useState<string | null>(null)
+  const [loserQuote, setLoserQuote] = useState<string>('')
   const [busy, setBusy] = useState(false)
   const [visualState, setVisualState] = useState<VisualState>({ type: 'idle' })
 
@@ -199,7 +209,8 @@ function OnlinePlayContent() {
           // Apply state update
           setGameState(activeGame)
           if (activeGame.winner) {
-            setWinner(activeGame.winner === playerId ? "You" : `Player ${activeGame.winner.slice(0, 4)}`)
+            const winName = activeGame.player_statuses[activeGame.winner]?.name || `Player ${activeGame.winner.slice(0, 4)}`
+            setWinner(activeGame.winner === playerId ? "You" : winName)
           }
           busyRef.current = false // Sync set
           setBusy(false)
@@ -215,6 +226,14 @@ function OnlinePlayContent() {
     const interval = setInterval(poll, 2000)
     return () => clearInterval(interval)
   }, [gameId, playerId])
+
+  // Select stable random loser quote once when winner is declared
+  useEffect(() => {
+    if (winner && winner !== 'You' && !loserQuote) {
+      const randomQuote = LOSER_QUOTES[Math.floor(Math.random() * LOSER_QUOTES.length)]
+      setLoserQuote(randomQuote)
+    }
+  }, [winner, loserQuote])
 
   const handleSlideDone = useCallback(() => {
     slideResolveRef.current?.()
@@ -650,18 +669,45 @@ function OnlinePlayContent() {
 
       {/* ── Win overlay ── */}
       {winner && (
-        <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-secondary-900/90 gap-5 select-none">
-          <Trophy size={64} className="text-[#FFD700] drop-shadow-[0_0_20px_rgba(255,215,0,0.4)] animate-bounce" />
-          <h2 className="m-0 text-3xl font-black text-primary-500 text-center font-sans tracking-wide uppercase">
-            {winner} wins!
-          </h2>
+        <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-secondary-950/95 gap-5 select-none p-6 text-center">
+          {winner === 'You' ? (
+            <>
+              <Trophy size={72} className="text-[#FFD700] drop-shadow-[0_0_20px_rgba(255,215,0,0.5)] animate-bounce" />
+              <h2 className="m-0 text-3xl font-black text-primary-400 font-sans tracking-wide uppercase">
+                Congratulations!
+              </h2>
+              <p className="text-secondary-200 text-sm font-bold max-w-sm mt-1">
+                You won the game! Master of the board!
+              </p>
+            </>
+          ) : (
+            <>
+              <div className="w-16 h-16 rounded-full bg-secondary-900 border border-secondary-800 flex items-center justify-center text-secondary-500 mb-2">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h2 className="m-0 text-3xl font-black text-secondary-300 font-sans tracking-wide uppercase">
+                Game Over
+              </h2>
+              <p className="text-secondary-100 text-xs font-bold mt-1">
+                {winner} reached cell 100 first.
+              </p>
+              {loserQuote && (
+                <p className="text-primary-450 text-xs italic font-bold max-w-xs mt-3 bg-secondary-900/60 py-2.5 px-4 rounded-xl border border-secondary-800">
+                  "{loserQuote}"
+                </p>
+              )}
+            </>
+          )}
+
           <GamingButton
             onClick={() => router.push('/')}
-            theme="golden"
+            theme={winner === 'You' ? "golden" : "primary"}
             size="lg"
-            className="mt-2"
+            className="mt-6"
           >
-            New Game
+            Home
           </GamingButton>
         </div>
       )}
