@@ -22,14 +22,13 @@ import {
 import BoardBackground    from '@/app/_components/BoardBackground'
 import BoardGrid, { type BoardPrediction } from '@/app/_components/BoardGrid'
 import PlayerPanel        from '@/app/_components/PlayerPanel'
-import CurrentTurnDisplay from '@/app/_components/CurrentTurnDisplay'
 import DiceRoller         from '@/app/_components/DiceRoller'
 import SlidingToken       from '@/app/_components/SlidingToken'
 import PredictionPanel    from '@/app/_components/PredictionPanel'
 import { soundManager } from '@/app/_utils/sound'
 import SoundToggleButton from '@/app/_components/SoundToggleButton'
 import GamingButton from '@/app/_components/GamingButton'
-import { Globe, Dices, AlertTriangle, Trophy } from 'lucide-react'
+import { Globe, Dices, AlertTriangle, Trophy, Home } from 'lucide-react'
 
 
 const STEP_MS        = 180
@@ -512,10 +511,7 @@ function OnlinePlayContent() {
 
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-screen h-screen overflow-hidden m-0 p-5 bg-secondary-900"
-    >
+    <div className="w-screen h-screen overflow-hidden m-0 p-0 bg-secondary-900 flex flex-row">
       {/* Lobby Error Banner */}
       {errorMsg && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[1001] p-3 text-xs bg-primary-950 border border-primary-800 text-primary-400 rounded-lg font-bold shadow-md flex items-center gap-1.5">
@@ -524,54 +520,74 @@ function OnlinePlayContent() {
         </div>
       )}
 
-      {/* ── Fixed UI ── */}
-      <PlayerPanel players={formatPlayers} currentPlayerId={activePlayerObj.id} />
-      <SoundToggleButton />
-      <CurrentTurnDisplay player={activePlayerObj} />
+      {/* ── Left main body: Board Container ── */}
+      <div
+        ref={containerRef as React.RefObject<HTMLDivElement>}
+        className="flex-1 min-w-0 h-full relative flex items-center justify-center bg-secondary-950 p-4"
+      >
+        {/* Top-left controls: Sound toggle & Home button */}
+        <div className="absolute top-4 left-4 z-50 flex items-center gap-2">
+          <button
+            onClick={() => router.push('/')}
+            title="Go to Home"
+            className="flex items-center justify-center bg-secondary-900 border border-secondary-700 hover:border-secondary-600 rounded-xl p-2.5 shadow-sm text-secondary-300 hover:text-secondary-100 cursor-pointer transition-all duration-200"
+          >
+            <Home size={18} strokeWidth={2.5} />
+          </button>
+          <SoundToggleButton />
+        </div>
 
-      {/* ── Dice — always visible; enabled only on our turn ── */}
-      {!winner && (
-        <DiceRoller
-          currentPlayer={activePlayerObj}
-          value={diceValue}
-          rolling={diceRolling}
-          onRoll={handleRoll}
-          disabled={busy || !isMyTurn}
+        {/* Board background image */}
+        <BoardBackground
+          src="/bg.avif"
+          containerRef={containerRef as React.RefObject<HTMLDivElement>}
+          onRectChange={setGridRect}
         />
-      )}
 
-      {/* ── Predictions Panel ── */}
-      {!winner && isMyTurn && (
-        <PredictionPanel predictions={predictions} activePlayerId={activePlayerObj.id} />
-      )}
+        {/* Grid overlay */}
+        {gridRect && (
+          <BoardGrid
+            rect={gridRect}
+            positions={displayPositions}
+            players={formatPlayers}
+            predictions={predictions}
+          />
+        )}
 
-      {/* ── Board background image ── */}
-      <BoardBackground
-        src="/bg.avif"
-        containerRef={containerRef as React.RefObject<HTMLDivElement>}
-        onRectChange={setGridRect}
-      />
+        {/* Sliding token animations */}
+        {visualState.type === 'sliding' && gridRect && (
+          <SlidingToken
+            playerId={Object.keys(gameState.player_statuses).indexOf(visualState.playerId) as 0|1|2|3}
+            fromCell={visualState.fromCell}
+            toCell={visualState.toCell}
+            rect={gridRect}
+            onDone={handleSlideDone}
+          />
+        )}
+      </div>
 
-      {/* ── Grid overlay ── */}
-      {gridRect && (
-        <BoardGrid
-          rect={gridRect}
-          positions={displayPositions}
-          players={formatPlayers}
-          predictions={predictions}
-        />
-      )}
+      {/* ── Right side: Sidebar ── */}
+      <div className="w-80 h-full border-l border-secondary-800 bg-secondary-900 flex flex-col p-4 gap-4 overflow-y-auto select-none shrink-0 justify-between">
+        <div className="flex flex-col gap-4">
+          <PlayerPanel players={formatPlayers} currentPlayerId={activePlayerObj.id} />
+          
+          {!winner && (
+            <DiceRoller
+              currentPlayer={activePlayerObj}
+              value={diceValue}
+              rolling={diceRolling}
+              onRoll={handleRoll}
+              disabled={busy || !isMyTurn}
+            />
+          )}
+        </div>
 
-      {/* ── Sliding token animations ── */}
-      {visualState.type === 'sliding' && gridRect && (
-        <SlidingToken
-          playerId={Object.keys(gameState.player_statuses).indexOf(visualState.playerId) as 0|1|2|3}
-          fromCell={visualState.fromCell}
-          toCell={visualState.toCell}
-          rect={gridRect}
-          onDone={handleSlideDone}
-        />
-      )}
+        <div className="flex flex-col gap-4 mt-auto">
+          {!winner && isMyTurn && (
+            <PredictionPanel predictions={predictions} activePlayerId={activePlayerObj.id} />
+          )}
+        </div>
+      </div>
 
       {/* ── Win overlay ── */}
       {winner && (

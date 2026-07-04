@@ -23,19 +23,7 @@ export default function PredictionPanel({
   const activeColor = PLAYERS[activePlayerId].color
 
   return (
-    <div className="fixed top-4 right-4 z-50 w-48 bg-secondary-900/90 backdrop-blur-md border border-secondary-750 rounded-xl overflow-hidden shadow-lg select-none">
-      {/* Sleek Gaming Header */}
-      <div className="py-1.5 px-2.5 border-b border-secondary-800 text-[0.55rem] font-black tracking-widest uppercase text-secondary-400 flex items-center justify-between box-border">
-        <span className="flex items-center gap-1.5">
-          <Sparkles size={11} className="text-secondary-400" />
-          <span>Predictions</span>
-        </span>
-        {/* Neon Active Pulse */}
-        <span className="flex h-2 w-2 relative">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-        </span>
-      </div>
+    <div className="w-full bg-secondary-900 border border-secondary-700 rounded-xl overflow-hidden shadow-lg select-none">
 
       {/* Predictions Body */}
       <div className="p-2 flex flex-col gap-1.5 max-h-44 overflow-y-auto box-border">

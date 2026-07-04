@@ -20,11 +20,7 @@ export default function PlayerPanel({ players, currentPlayerId }: PlayerPanelPro
   const rows = players ?? PLAYERS.map((p) => ({ id: p.id, name: p.name }))
 
   return (
-    <div className="fixed top-4 left-4 z-50 min-w-[190px] bg-secondary-900 border border-secondary-700 rounded-xl overflow-hidden shadow-sm">
-      {/* Panel header */}
-      <div className="py-2 px-3.5 border-b border-secondary-800 text-[0.6rem] font-bold tracking-wider uppercase text-secondary-500">
-        Players
-      </div>
+    <div className="w-full bg-secondary-900 border border-secondary-700 rounded-xl overflow-hidden shadow-sm">
 
       {/* Player rows */}
       <table className="w-full border-collapse">

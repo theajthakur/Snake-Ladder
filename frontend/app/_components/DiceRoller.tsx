@@ -139,13 +139,8 @@ export default function DiceRoller({
   return (
     <div
       style={{ borderColor: `${config.color}44` }}
-      className="fixed right-4 bottom-4 z-50 w-40 flex flex-col items-center bg-secondary-900 border border-secondary-700 rounded-2xl overflow-hidden shadow-md"
+      className="w-full flex flex-col items-center bg-secondary-900 border border-secondary-700 rounded-2xl overflow-hidden shadow-md"
     >
-      {/* ── Header ── */}
-      <div className="w-full py-2.5 px-3.5 border-b border-secondary-800 text-[0.6rem] font-black tracking-widest uppercase text-secondary-400 flex items-center gap-1.5 box-border select-none">
-        <Dices size={12} className="text-secondary-500" />
-        <span>Dice</span>
-      </div>
 
       {/* ── Current player ── */}
       <div className="w-full py-2.5 px-3 border-b border-secondary-800 flex items-center gap-2 box-border">
