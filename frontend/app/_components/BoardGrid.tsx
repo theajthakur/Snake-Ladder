@@ -56,7 +56,7 @@ export default function BoardGrid({
         width: rect.width,
         height: rect.height,
       }}
-      className="absolute grid grid-cols-10 grid-rows-10 p-5 box-border"
+      className="absolute grid grid-cols-10 grid-rows-10 p-2.5 lg:p-5 box-border"
     >
       {Array.from({ length: ROWS }, (_, rowIdx) =>
         Array.from({ length: COLS }, (_, colIdx) => {

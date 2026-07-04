@@ -28,9 +28,12 @@ games: Dict[str, Game] = {}
 
 
 def start_game(player_size: int) -> str:
-    game_id = str(uuid4())
+    game_id = str(uuid4().hex[:4])
+    while game_id in games:
+        game_id = str(uuid4().hex[:5])
+    
     size=player_size
-    if(size<1): size=1
+    if(size<2): size=2
     if(size>4): size=4
 
     games[game_id] = Game(

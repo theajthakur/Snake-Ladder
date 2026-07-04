@@ -241,23 +241,23 @@ export default function OfflinePlayPage() {
     <div className="w-screen h-screen overflow-hidden m-0 p-0 bg-secondary-900 flex flex-col lg:flex-row">
       {/* ── Left/Upper body: Board Container ── */}
       <div className="h-[60%] lg:h-full lg:flex-1 min-h-0 flex flex-col bg-secondary-950">
-        {/* Top controls header bar */}
-        <div className="h-14 w-full flex items-center px-4 gap-2 border-b border-secondary-900 shrink-0 select-none lg:absolute">
-          <button
-            onClick={() => router.push('/')}
-            title="Go to Home"
-            className="flex items-center justify-center bg-secondary-900 border border-secondary-700 hover:border-secondary-600 rounded-xl p-2 shadow-sm text-secondary-300 hover:text-secondary-100 cursor-pointer transition-all duration-200"
-          >
-            <Home size={18} strokeWidth={2.5} />
-          </button>
-          <SoundToggleButton />
-        </div>
-
         {/* Board viewport */}
         <div
           ref={containerRef}
-          className="flex-1 min-h-0 relative flex items-center justify-center p-4"
+          className="flex-1 min-h-0 w-full relative flex items-center justify-center p-4"
         >
+          {/* Floating Actions Segmented Group */}
+          <div className="flex absolute top-4 left-4 z-50 items-center bg-secondary-900 border border-secondary-700 rounded-xl overflow-hidden shadow-sm select-none">
+            <button
+              onClick={() => router.push('/')}
+              title="Go to Home"
+              className="flex items-center justify-center p-2.5 text-secondary-300 hover:text-secondary-100 hover:bg-secondary-800/60 cursor-pointer transition-colors border-0 border-r border-secondary-800"
+            >
+              <Home size={18} strokeWidth={2.5} />
+            </button>
+            <SoundToggleButton className="flex items-center justify-center p-2.5 text-secondary-300 hover:text-secondary-100 hover:bg-secondary-800/60 cursor-pointer transition-colors border-0" />
+          </div>
+
           {/* Board image */}
           <BoardBackground
             src="/bg.avif"

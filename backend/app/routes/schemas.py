@@ -7,8 +7,8 @@ class ErrorResponse(BaseModel):
 class StartGameRequestBody(BaseModel):
     player_size: int = Field(
         ...,
-        description="Number of players for the game. Must be between 1 and 4.",
-        ge=1,
+        description="Number of players for the game. Must be between 2 and 4.",
+        ge=2,
         le=4,
         examples=[2]
     )
