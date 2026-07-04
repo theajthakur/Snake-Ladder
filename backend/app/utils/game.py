@@ -53,6 +53,9 @@ def join_game(game_id: str, name: str) -> PlayerStatus:
     if game is None:
         raise ValueError("Game not found")
 
+    if game.winner is not None:
+        raise ValueError("Game is already completed")
+
     if len(game.player_statuses) >= game.player_size:
         raise ValueError("Game is full")
 

@@ -5,10 +5,13 @@ from app.utils.store import SNAKES,LADDERS
 
 
 def throw_dice(game_id, player_id, favour: bool = False):
-    val=dice(favour)
     game=games.get(game_id)
     if not game:
         raise ValueError("Invalid game_id")
+    if game.winner is not None:
+        raise ValueError("Game is already completed")
+        
+    val=dice(favour)
     game.last_interaction = time.time()
     player=game.player_statuses.get(player_id)
     if not player:
