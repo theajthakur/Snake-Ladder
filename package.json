@@ -1,5 +1,37 @@
 {
-	"dependencies": {
-		"axios": "^1.18.1"
-	}
+  "name": "snake-ladder-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:frontend": "pnpm -C frontend install",
+    "install-frontend": "pnpm -C frontend install",
+    "install:backend": "cmd /c \"if not exist backend\\venv (python -m venv backend\\venv) && backend\\venv\\Scripts\\pip install -r backend\\requirements.txt\"",
+    "install-backend": "cmd /c \"if not exist backend\\venv (python -m venv backend\\venv) && backend\\venv\\Scripts\\pip install -r backend\\requirements.txt\"",
+    "install:all": "pnpm run install:frontend && pnpm run install:backend",
+    "install-all": "pnpm run install:frontend && pnpm run install:backend",
+    "install": "pnpm run install:frontend && pnpm run install:backend",
+    "dev:frontend": "pnpm -C frontend dev",
+    "dev-frontend": "pnpm -C frontend dev",
+    "dev:backend": "backend\\venv\\Scripts\\python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000",
+    "dev-backend": "backend\\venv\\Scripts\\python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000",
+    "dev": "concurrently \"pnpm run dev:frontend\" \"pnpm run dev:backend\"",
+    "build:frontend": "pnpm -C frontend build",
+    "build-frontend": "pnpm -C frontend build",
+    "build:backend": "echo \"No build step required for backend\"",
+    "build-backend": "echo \"No build step required for backend\"",
+    "build:all": "pnpm run build:frontend",
+    "build-all": "pnpm run build:frontend",
+    "build": "pnpm run build:frontend",
+    "start:frontend": "pnpm -C frontend start",
+    "start-frontend": "pnpm -C frontend start",
+    "start:backend": "backend\\venv\\Scripts\\python -m uvicorn app.main:app --host 127.0.0.1 --port 8000",
+    "start-backend": "backend\\venv\\Scripts\\python -m uvicorn app.main:app --host 127.0.0.1 --port 8000",
+    "start": "concurrently \"pnpm run start:frontend\" \"pnpm run start:backend\""
+  },
+  "dependencies": {
+    "axios": "^1.18.1"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
 }

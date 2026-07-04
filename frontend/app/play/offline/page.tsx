@@ -34,6 +34,9 @@ import CurrentTurnDisplay from '@/app/_components/CurrentTurnDisplay'
 import DiceRoller from '@/app/_components/DiceRoller'
 import SlidingToken from '@/app/_components/SlidingToken'
 import PredictionPanel from '@/app/_components/PredictionPanel'
+import { soundManager } from '@/app/_utils/sound'
+import SoundToggleButton from '@/app/_components/SoundToggleButton'
+
 
 // ── Timing constants ─────────────────────────────────────────────────────────
 const STEP_MS = 180   // delay between each stepped cell
@@ -122,6 +125,7 @@ export default function OfflinePlayPage() {
         return
       }
       // Pop-in at cell 1
+      soundManager.play('firstSix')
       setVisualState({ type: 'stepping', playerId: player.id, pos: 1 })
       await wait(500)
       setVisualState({ type: 'idle' })
@@ -142,6 +146,7 @@ export default function OfflinePlayPage() {
     // Step cell-by-cell to raw destination
     for (let p = pos + 1; p <= raw; p++) {
       setVisualState({ type: 'stepping', playerId: player.id, pos: p })
+      soundManager.play('step')
       await wait(STEP_MS)
     }
 
@@ -150,6 +155,13 @@ export default function OfflinePlayPage() {
     if (resolved !== raw) {
       // Pause at snake-head / ladder-bottom so player sees what happened
       await wait(SLIDE_PAUSE_MS)
+
+      // Play ladder or snake sound
+      if (resolved > raw) {
+        soundManager.play('ladder')
+      } else {
+        soundManager.play('snake')
+      }
 
       // CSS straight-line slide to resolved cell
       await new Promise<void>((resolve) => {
@@ -165,6 +177,7 @@ export default function OfflinePlayPage() {
 
     if (resolved === 100) {
       setWinner(player.name)
+      soundManager.play('win')
       setGameState((s) => s ? movePlayer(s, player.id, 100) : s)
     } else {
       setGameState((s) => s ? nextTurn(movePlayer(s, player.id, resolved)) : s)
@@ -224,6 +237,7 @@ export default function OfflinePlayPage() {
       {/* ── Fixed UI — frozen until animation ends ── */}
       <PlayerPanel players={gameState.players} currentPlayerId={active.id} />
       <CellHighlightInput onChange={setHighlight} />
+      <SoundToggleButton />
       <CurrentTurnDisplay player={active} />
 
       {/* ── Dice — disabled while busy ── */}

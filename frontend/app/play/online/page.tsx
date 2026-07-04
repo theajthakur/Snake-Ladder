@@ -27,6 +27,9 @@ import CurrentTurnDisplay from '@/app/_components/CurrentTurnDisplay'
 import DiceRoller         from '@/app/_components/DiceRoller'
 import SlidingToken       from '@/app/_components/SlidingToken'
 import PredictionPanel    from '@/app/_components/PredictionPanel'
+import { soundManager } from '@/app/_utils/sound'
+import SoundToggleButton from '@/app/_components/SoundToggleButton'
+
 
 const STEP_MS        = 180
 const SLIDE_PAUSE_MS = 380
@@ -125,6 +128,7 @@ function OnlinePlayContent() {
               // 2. Animate the player's token stepping cell-by-cell
               if (targetPos !== oldPos) {
                 if (oldPos === 0 && rollVal === 6) {
+                  soundManager.play('firstSix')
                   setVisualState({ type: 'stepping', playerId: playerToAnimate, pos: 1 })
                   await wait(500)
                   setVisualState({ type: 'idle' })
@@ -132,17 +136,30 @@ function OnlinePlayContent() {
                   const rawDest = oldPos + rollVal
                   for (let p = oldPos + 1; p <= Math.min(rawDest, 100); p++) {
                     setVisualState({ type: 'stepping', playerId: playerToAnimate, pos: p })
+                    soundManager.play('step')
                     await wait(STEP_MS)
                   }
 
                   // CSS slide for snakes / ladders
                   if (targetPos !== rawDest && rawDest <= 100) {
                     await wait(SLIDE_PAUSE_MS)
+                    
+                    // Play ladder or snake sound
+                    if (targetPos > rawDest) {
+                      soundManager.play('ladder')
+                    } else {
+                      soundManager.play('snake')
+                    }
+
                     await new Promise<void>((resolve) => {
                       slideResolveRef.current = resolve
                       setVisualState({ type: 'sliding', playerId: playerToAnimate, fromCell: rawDest, toCell: targetPos })
                     })
                   }
+                }
+
+                if (targetPos === 100) {
+                  soundManager.play('win')
                 }
               }
 
@@ -242,6 +259,7 @@ function OnlinePlayContent() {
 
       // Animate: Activation entry
       if (oldPos === 0 && rollVal === 6) {
+        soundManager.play('firstSix')
         setVisualState({ type: 'stepping', playerId, pos: 1 })
         await wait(500)
         setVisualState({ type: 'idle' })
@@ -250,12 +268,21 @@ function OnlinePlayContent() {
         const rawDest = oldPos + rollVal
         for (let p = oldPos + 1; p <= Math.min(rawDest, 100); p++) {
           setVisualState({ type: 'stepping', playerId, pos: p })
+          soundManager.play('step')
           await wait(STEP_MS)
         }
 
         // CSS slide for snakes / ladders
         if (targetPos !== rawDest && rawDest <= 100) {
           await wait(SLIDE_PAUSE_MS)
+          
+          // Play ladder or snake sound
+          if (targetPos > rawDest) {
+            soundManager.play('ladder')
+          } else {
+            soundManager.play('snake')
+          }
+
           await new Promise<void>((resolve) => {
             slideResolveRef.current = resolve
             setVisualState({ type: 'sliding', playerId, fromCell: rawDest, toCell: targetPos })
@@ -291,6 +318,7 @@ function OnlinePlayContent() {
 
       if (targetPos === 100) {
         setWinner("You")
+        soundManager.play('win')
       }
     } catch (err: any) {
       setDiceRolling(false)
@@ -485,6 +513,7 @@ function OnlinePlayContent() {
       {/* ── Fixed UI ── */}
       <PlayerPanel players={formatPlayers} currentPlayerId={activePlayerObj.id} />
       <CellHighlightInput onChange={setHighlight} />
+      <SoundToggleButton />
       <CurrentTurnDisplay player={activePlayerObj} />
 
       {/* ── Dice — always visible; enabled only on our turn ── */}
