@@ -31,7 +31,7 @@ class SoundManager {
   }
 
   public play(soundName: 'ladder' | 'firstSix' | 'step' | 'snake' | 'win' | 'click') {
-    if (this.muted) return;
+    if (this.muted && soundName !== 'click') return;
     const audio = this.sounds[soundName];
     if (audio) {
       try {
@@ -48,7 +48,6 @@ class SoundManager {
   }
 
   public playDiceRoll() {
-    if (this.muted) return;
     const audio = this.sounds.diceRoll;
     if (audio) {
       try {
@@ -77,9 +76,6 @@ class SoundManager {
 
   public setMute(mute: boolean) {
     this.muted = mute;
-    if (mute) {
-      this.stopDiceRoll();
-    }
     try {
       localStorage.setItem('game_sound_muted', String(mute));
     } catch (e) {

@@ -78,7 +78,7 @@ def start_game_endpoint(request: StartGameRequestBody):
 )
 def join_game_endpoint(request: JoinGameRequestBody):
     try:
-        game = join_game(request.game_id)
+        game = join_game(request.game_id, request.name)
         return {
             "message": "Game joined",
             "game": game,
@@ -172,8 +172,8 @@ def game_detail_endpoint(game_id: str):
     players_list = []
     for idx, pid in enumerate(game.player_statuses.keys()):
         players_list.append({
-            "name": f"Player {idx + 1}",
-            "id": str(idx + 1)
+            "name": game.player_statuses[pid].name,
+            "id": pid
         })
         
     return {

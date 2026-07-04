@@ -20,9 +20,11 @@ class StartGameResponse(BaseModel):
 
 class JoinGameRequestBody(BaseModel):
     game_id: str = Field(..., description="The unique ID of the game to join", examples=["550e8400-e29b-41d4-a716-446655440000"])
+    name: str = Field(..., description="The name of the player", examples=["VijayAlpha"])
 
 class PlayerStatusModel(BaseModel):
     player_id: str = Field(..., description="Unique ID of the player", examples=["7a5d3f82-3d84-482a-a92c-63cf3a908a8f"])
+    name: str = Field(..., description="The nickname of the player", examples=["VijayAlpha"])
     position: int = Field(..., description="Current square/position of the player on the board (0-100)", examples=[0])
     turn_count: int = Field(..., description="Total number of turns/rolls taken by this player", examples=[0])
     is_winner: bool = Field(..., description="Whether this player has won the game", examples=[False])

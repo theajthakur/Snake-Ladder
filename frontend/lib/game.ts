@@ -2,12 +2,13 @@ import api from './api';
 
 export interface PlayerStatus {
   player_id: string;
+  name: string;
   position: number;
   turn_count: number;
   is_winner: boolean;
   is_activated: boolean;
 }
-
+// ...
 export interface GameState {
   game_id: string;
   player_statuses: Record<string, PlayerStatus>;
@@ -59,10 +60,12 @@ export async function startGame(playerSize: number): Promise<StartGameResponse> 
 /**
  * Join an existing game lobby
  * @param gameId The UUID of the game
+ * @param name The nickname of the player joining
  */
-export async function joinGame(gameId: string): Promise<JoinGameResponse> {
+export async function joinGame(gameId: string, name: string): Promise<JoinGameResponse> {
   const response = await api.post<JoinGameResponse>('/join-game', {
     game_id: gameId,
+    name: name,
   });
   return response.data;
 }

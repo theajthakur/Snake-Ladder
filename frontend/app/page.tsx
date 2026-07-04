@@ -18,6 +18,13 @@ import {
 
 const COUNT_OPTIONS = [1, 2, 3, 4] as const
 
+const GAMING_NAMES = [
+  'AlphaLobo', 'BetaSnake', 'PixelMax', 'NeoClimber',
+  'ApexRoller', 'CyberFang', 'DoomLadder', 'HyperStep',
+  'OmegaRider', 'SonicCube', 'Toxico', 'SkyHigh',
+  'NovaRacer', 'DeltaDash', 'RogueDie', 'VoltGrip'
+]
+
 export default function LandingPage() {
   const router = useRouter()
 
@@ -29,7 +36,10 @@ export default function LandingPage() {
   const [names, setNames] = useState<string[]>(['', '', '', ''])
 
   // Online Config State
-  const [onlineName, setOnlineName] = useState<string>('')
+  const [onlineName, setOnlineName] = useState<string>(() => {
+    const randomIdx = Math.floor(Math.random() * GAMING_NAMES.length);
+    return GAMING_NAMES[randomIdx];
+  })
   const [onlineSize, setOnlineSize] = useState<number>(2)
   const [joinRoomId, setJoinRoomId] = useState<string>('')
 
@@ -63,6 +73,10 @@ export default function LandingPage() {
 
   // ── Online API Create Room ──────────────────────────────────────────────────
   const handleCreateRoom = async () => {
+    if (!onlineName.trim()) {
+      setErrorMsg('Please enter your nickname.')
+      return
+    }
     setErrorMsg(null)
     setLoading(true)
     try {
@@ -71,7 +85,7 @@ export default function LandingPage() {
       const pSize = roomRes.player_size
 
       // Join game after creating
-      const joinRes = await joinGame(gId)
+      const joinRes = await joinGame(gId, onlineName.trim())
       const pId = joinRes.game.player_id
 
       // Store credentials in localStorage
@@ -98,6 +112,10 @@ export default function LandingPage() {
 
   // ── Online API Join Room ────────────────────────────────────────────────────
   const handleJoinRoom = async () => {
+    if (!onlineName.trim()) {
+      setErrorMsg('Please enter your nickname.')
+      return
+    }
     if (!joinRoomId.trim()) {
       setErrorMsg('Please enter a Room Invite Code.')
       return
@@ -105,7 +123,7 @@ export default function LandingPage() {
     setErrorMsg(null)
     setLoading(true)
     try {
-      const joinRes = await joinGame(joinRoomId.trim())
+      const joinRes = await joinGame(joinRoomId.trim(), onlineName.trim())
       const pId = joinRes.game.player_id
       const gId = joinRoomId.trim()
 

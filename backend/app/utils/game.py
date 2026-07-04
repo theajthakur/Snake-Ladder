@@ -6,6 +6,7 @@ from uuid import uuid4
 @dataclass
 class PlayerStatus:
     player_id: str
+    name: str
     position: int = 0
     turn_count: int = 0
     is_winner: bool = False
@@ -44,7 +45,7 @@ def start_game(player_size: int) -> str:
     return games.get(game_id)
 
 
-def join_game(game_id: str) -> PlayerStatus:
+def join_game(game_id: str, name: str) -> PlayerStatus:
     game = games.get(game_id)
 
     if game is None:
@@ -53,7 +54,7 @@ def join_game(game_id: str) -> PlayerStatus:
     if len(game.player_statuses) >= game.player_size:
         raise ValueError("Game is full")
 
-    player = PlayerStatus(player_id=str(uuid4()))
+    player = PlayerStatus(player_id=str(uuid4()), name=name)
     game.player_statuses[player.player_id]=player
 
     # Set first player's turn

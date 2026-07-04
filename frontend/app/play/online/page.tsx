@@ -42,6 +42,13 @@ type VisualState =
   | { type: 'stepping'; playerId: string; pos: number }
   | { type: 'sliding'; playerId: string; fromCell: number; toCell: number }
 
+const GAMING_NAMES = [
+  'AlphaLobo', 'BetaSnake', 'PixelMax', 'NeoClimber',
+  'ApexRoller', 'CyberFang', 'DoomLadder', 'HyperStep',
+  'OmegaRider', 'SonicCube', 'Toxico', 'SkyHigh',
+  'NovaRacer', 'DeltaDash', 'RogueDie', 'VoltGrip'
+]
+
 function OnlinePlayContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -55,6 +62,10 @@ function OnlinePlayContent() {
   const [busy, setBusy] = useState(false)
   const [visualState, setVisualState] = useState<VisualState>({ type: 'idle' })
 
+  const [onlineName, setOnlineName] = useState<string>(() => {
+    const randomIdx = Math.floor(Math.random() * GAMING_NAMES.length);
+    return GAMING_NAMES[randomIdx];
+  })
   const [joinInput, setJoinInput] = useState('')
   const [playerCount, setPlayerCount] = useState<number>(2)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
@@ -121,6 +132,7 @@ function OnlinePlayContent() {
                 value: activeGame.last_roll_value
               }
 
+              busyRef.current = true // Sync set
               setBusy(true)
 
               const playerToAnimate = activeGame.last_roll_player
@@ -189,6 +201,7 @@ function OnlinePlayContent() {
           if (activeGame.winner) {
             setWinner(activeGame.winner === playerId ? "You" : `Player ${activeGame.winner.slice(0, 4)}`)
           }
+          busyRef.current = false // Sync set
           setBusy(false)
         } else {
           setErrorMsg("Game session not found on server")
@@ -210,10 +223,14 @@ function OnlinePlayContent() {
 
   // Create Lobby
   const handleHost = async () => {
+    if (!onlineName.trim()) {
+      setErrorMsg("Please enter your nickname")
+      return
+    }
     setErrorMsg(null)
     try {
       const gameRes = await apiStartGame(playerCount)
-      const playerRes = await apiJoinGame(gameRes.game_id)
+      const playerRes = await apiJoinGame(gameRes.game_id, onlineName.trim())
 
       const nextGid = gameRes.game_id
       const nextPid = playerRes.game.player_id
@@ -229,10 +246,14 @@ function OnlinePlayContent() {
 
   // Join existing lobby
   const handleJoin = async () => {
+    if (!onlineName.trim()) {
+      setErrorMsg("Please enter your nickname")
+      return
+    }
     if (!joinInput.trim()) return
     setErrorMsg(null)
     try {
-      const playerRes = await apiJoinGame(joinInput.trim())
+      const playerRes = await apiJoinGame(joinInput.trim(), onlineName.trim())
       const nextPid = playerRes.game.player_id
       const nextGid = joinInput.trim()
 
@@ -248,17 +269,25 @@ function OnlinePlayContent() {
   // Triggered when clicking dice — calls backend to throw the dice
   const handleRoll = useCallback(async () => {
     if (busyRef.current || !gameId || !playerId || !gameState) return
+    busyRef.current = true // Sync set
     setBusy(true)
     setDiceRolling(true)
     setErrorMsg(null)
 
+    const startTime = Date.now()
     try {
       const res = await apiThrowDice(gameId, playerId)
+      
+      const elapsed = Date.now() - startTime
+      if (elapsed < 1000) {
+        await wait(1000 - elapsed)
+      }
+
       const rollVal = res.game.value
       const targetPos = res.game.position
       const nextTurnPlayer = res.game.turn
 
-      // Show exact API value immediately
+      // Show exact API value
       setDiceValue(rollVal)
       setDiceRolling(false)
 
@@ -332,6 +361,7 @@ function OnlinePlayContent() {
       setDiceRolling(false)
       setErrorMsg(err.message || "Failed executing movement.")
     } finally {
+      busyRef.current = false // Sync set
       setBusy(false)
     }
   }, [gameId, playerId, gameState])
@@ -360,6 +390,21 @@ function OnlinePlayContent() {
               <span>{errorMsg}</span>
             </div>
           )}
+
+          {/* Nickname input */}
+          <div className="mb-6 pb-6 border-b border-secondary-700/50">
+            <label className="block mb-1.5 text-[0.6rem] font-bold uppercase text-secondary-500">
+              Your Nickname
+            </label>
+            <input
+              type="text"
+              maxLength={15}
+              value={onlineName}
+              onChange={(e) => setOnlineName(e.target.value)}
+              placeholder="Enter Nickname"
+              className="w-full bg-secondary-900 border border-secondary-700 focus:border-secondary-600 rounded-xl px-3 py-2.5 text-xs font-semibold outline-none text-white animate-pulse-subtle"
+            />
+          </div>
 
           {/* Host Setup */}
           <div className="mb-6 pb-6 border-b border-secondary-700/50">
@@ -456,15 +501,20 @@ function OnlinePlayContent() {
   const isLocked = currentPos === 0
 
   // Format data for standard UI components
-  const formatPlayers = Object.keys(gameState.player_statuses).map((pid, idx) => ({
-    id: idx as 0 | 1 | 2 | 3,
-    name: `Player ${pid.slice(0, 4)}${pid === playerId ? ' (You)' : ''}`
-  }))
+  const formatPlayers = Object.keys(gameState.player_statuses).map((pid, idx) => {
+    const rawName = gameState.player_statuses[pid].name || `Player ${pid.slice(0, 4)}`
+    return {
+      id: idx as 0 | 1 | 2 | 3,
+      name: pid === playerId ? `${rawName} (You)` : rawName
+    }
+  })
 
   const activePlayerIndex = Object.keys(gameState.player_statuses).indexOf(gameState.current_turn)
+  const activePlayerUuid = gameState.current_turn
+  const activePlayerName = gameState.player_statuses[activePlayerUuid]?.name || `Player ${activePlayerUuid.slice(0, 4)}`
   const activePlayerObj = {
     id: (activePlayerIndex >= 0 ? activePlayerIndex : 0) as 0 | 1 | 2 | 3,
-    name: `Player ${gameState.current_turn.slice(0, 4)}${gameState.current_turn === playerId ? ' (You)' : ''}`
+    name: activePlayerUuid === playerId ? `${activePlayerName} (You)` : activePlayerName
   }
 
   // Map backend string statuses back to player IDs (0-3 index) for rendering
