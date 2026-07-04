@@ -35,6 +35,7 @@ The online multiplayer mode uses a server-authoritative design to ensure fair pl
 * **Server-Authoritative State**: All critical game data, including player positions, turn sequences, and validation flags, are stored and updated on the backend server.
 * **Server-Side Roll Generation**: Dice values are generated on the server. The client cannot inject or send roll values.
 * **Input Validation**: The server validates all incoming player actions. Requests made out of turn, or rolls on completed games, are rejected.
+* **Data Isolation**: Clients query state for their specific room using isolated session APIs (`/game-state?game_id=...`). The server health checking route (`/test`) is restricted to returning high-level telemetry and metrics (such as active connection count, completed matches, and memory usage) rather than exposing raw state objects.
 * **Session Lifecycle**:
   * **Room Expiration**: Every join or roll action updates the room's `last_interaction` timestamp. An asynchronous background task checks the rooms list every 30 seconds and purges any session that has been inactive for more than 5 minutes.
   * **Completion Lock**: Once a player reaches cell 100, the game is flagged as completed. The server blocks all subsequent actions for that session and stops updating the interaction timestamp, letting the session expire and clean up automatically.

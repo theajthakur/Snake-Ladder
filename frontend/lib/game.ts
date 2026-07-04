@@ -43,7 +43,12 @@ export interface ThrowDiceResponse {
 }
 
 export interface SystemStatusResponse {
-  game: Record<string, GameState>;
+  status: string;
+  total_games: number;
+  active_games: number;
+  completed_games: number;
+  total_players: number;
+  memory_usage_mb: number;
 }
 
 /**
@@ -84,10 +89,21 @@ export async function throwDice(gameId: string, playerId: string): Promise<Throw
 }
 
 /**
- * Retrieve all game sessions state (useful for debugging / monitoring)
+ * Retrieve system health check metrics status
  */
 export async function getSystemStatus(): Promise<SystemStatusResponse> {
   const response = await api.get<SystemStatusResponse>('/test');
+  return response.data;
+}
+
+/**
+ * Fetch the full current state of a specific game session
+ * @param gameId The UUID of the game
+ */
+export async function getGameState(gameId: string): Promise<GameState> {
+  const response = await api.get<GameState>('/game-state', {
+    params: { game_id: gameId },
+  });
   return response.data;
 }
 

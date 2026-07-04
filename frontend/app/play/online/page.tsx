@@ -14,7 +14,7 @@ import {
   startGame as apiStartGame,
   joinGame as apiJoinGame,
   throwDice as apiThrowDice,
-  getSystemStatus,
+  getGameState,
   type PlayerStatus,
   type GameState,
 } from '@/lib/game'
@@ -117,15 +117,13 @@ function OnlinePlayContent() {
       if (busyRef.current) return
 
       try {
-        const response = await getSystemStatus()
+        const activeGame = await getGameState(gameId)
 
         // Double check busy flag after await to avoid overwriting state during user action
         if (busyRef.current) {
           console.log("[POLL] Discarding in-flight poll response because UI became busy")
           return
         }
-
-        const activeGame = response.game[gameId]
         if (activeGame) {
           const prevGame = gsRef.current
           if (prevGame) {

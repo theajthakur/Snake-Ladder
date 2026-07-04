@@ -58,7 +58,12 @@ class GameModel(BaseModel):
     last_roll_player: str = Field("", description="The player ID who made the last roll")
 
 class SystemStatusResponse(BaseModel):
-    game: Dict[str, GameModel] = Field(..., description="Map of game IDs to their full state details")
+    status: str = Field(..., description="System status", examples=["healthy"])
+    total_games: int = Field(..., description="Total game sessions in memory", examples=[5])
+    active_games: int = Field(..., description="Lobbies currently in progress", examples=[2])
+    completed_games: int = Field(..., description="Completed game sessions", examples=[1])
+    total_players: int = Field(..., description="Total registered players", examples=[12])
+    memory_usage_mb: float = Field(..., description="Current memory usage in MB", examples=[42.5])
 
 class IndexResponse(BaseModel):
     message: str = Field(..., description="Welcome message", examples=["Hello World"])

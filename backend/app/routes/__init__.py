@@ -14,7 +14,8 @@ from .schemas import (
     SystemStatusResponse,
     IndexResponse,
     ErrorResponse,
-    GameDetailResponse
+    GameDetailResponse,
+    GameModel
 )
 
 api_router = APIRouter()
@@ -161,15 +162,63 @@ def throw_dice_endpoint(request: ThrowDiceRequestBody):
 @api_router.get(
     "/test",
     response_model=SystemStatusResponse,
-    summary="Get all game sessions status",
-    description="Fetches a list of all active game lobbies and their complete in-memory states (useful for debugging).",
-    response_description="Returns a dictionary mapping game IDs to their respective Game states.",
+    summary="Get system health check status",
+    description="Fetches metrics about memory usage, active game instances, and players.",
+    response_description="Returns a health report with system metrics.",
     tags=["System"]
 )
 def status_app():
+    import os
+    try:
+        import psutil
+        process = psutil.Process(os.getpid())
+        mem_mb = round(process.memory_info().rss / (1024 * 1024), 2)
+    except Exception:
+        mem_mb = 0.0
+
+    total_games = len(games)
+    active_games = 0
+    completed_games = 0
+    total_players = 0
+
+    for game in games.values():
+        total_players += len(game.player_statuses)
+        if game.winner is not None:
+            completed_games += 1
+        elif game.game_started:
+            active_games += 1
+
     return {
-        "game": games
+        "status": "healthy",
+        "total_games": total_games,
+        "active_games": active_games,
+        "completed_games": completed_games,
+        "total_players": total_players,
+        "memory_usage_mb": mem_mb
     }
+
+
+@api_router.get(
+    "/game-state",
+    response_model=GameModel,
+    responses={
+        status.HTTP_404_NOT_FOUND: {
+            "model": ErrorResponse,
+            "description": "Game ID not found."
+        }
+    },
+    summary="Get game state for a session",
+    description="Returns the full current state of a specific game session.",
+    tags=["Game Management"]
+)
+def game_state_endpoint(game_id: str):
+    game = games.get(game_id)
+    if not game:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Game not found"
+        )
+    return game
 
 
 @api_router.get(
