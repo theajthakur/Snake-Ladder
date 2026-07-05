@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Orbitron } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
@@ -43,6 +45,8 @@ export default function RootLayout({
     >
       <body className="m-0 p-0 overflow-hidden">
         <CursorManager />
+        <Analytics />
+        <SpeedInsights />
         {children}
       </body>
     </html>
