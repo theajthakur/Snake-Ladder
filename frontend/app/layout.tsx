@@ -42,6 +42,7 @@ export const metadata: Metadata = {
   },
   other: {
     "google-adsense-account": "ca-pub-5937619927122903",
+    "yandex-verification": "ebec25badc726053"
   },
   alternates: {
     canonical: "/",
