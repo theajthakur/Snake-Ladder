@@ -327,7 +327,7 @@ export const infoPages: Record<string, InfoPage> = {
       {
         heading: 'Network Requirements',
         paragraphs: [
-          'Online multiplayer requires basic HTTP communication. Please ensure that your browser allows cookies and local storage, and that your local network does not block external API calls to vercel.app domains.'
+          'Online multiplayer requires basic HTTP communication. Please ensure that your browser allows cookies and local storage, and that your local network does not block external API calls to snakeladder.me domains.'
         ]
       }
     ]

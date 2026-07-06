@@ -33,7 +33,9 @@ app.include_router(api_router)
 
 origins = [
     "http://localhost:3000",
-    "https://snake-ladder-rouge.vercel.app"
+    "https://snake-ladder-rouge.vercel.app",
+    "https://snakeladder.me",
+    "https://www.snakeladder.me"
 ]
 
 app.add_middleware(
