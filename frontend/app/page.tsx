@@ -7,7 +7,7 @@ import PlayerToken from '@/app/_components/PlayerToken'
 import GamingButton from '@/app/_components/GamingButton'
 import GamingModeButton from '@/app/_components/GamingModeButton'
 import OfflineSetup from '@/app/_components/OfflineSetup'
-import { Gamepad2, Globe, AlertTriangle, RotateCw } from 'lucide-react'
+import { Gamepad2, Globe, AlertTriangle, RotateCw, Dices, Users, Zap, Sparkles, Volume2, Laptop } from 'lucide-react'
 import { PLAYERS } from '@/app/data/players'
 import { createNewGame, saveGameState, type GamePlayer } from '@/app/_store/gameStore'
 import {
@@ -201,14 +201,24 @@ export default function LandingPage() {
                 Roll the dice, avoid the snakes, and climb to the top. Play local offline matches or connect online with other players.
               </p>
             </div>
-            <GamingButton
-              onClick={() => setStep(1)}
-              size="lg"
-              theme="golden"
-              className="w-full mt-8"
-            >
-              Get Started
-            </GamingButton>
+            <div className="flex flex-col gap-2.5 mt-8 w-full">
+              <GamingButton
+                onClick={() => setStep(1)}
+                size="lg"
+                theme="golden"
+                className="w-full"
+              >
+                Get Started
+              </GamingButton>
+              <GamingButton
+                onClick={() => router.push('/blog')}
+                size="sm"
+                theme="classic"
+                className="w-full"
+              >
+                Read Blog Hub
+              </GamingButton>
+            </div>
           </div>
         )}
 
@@ -573,37 +583,55 @@ export default function LandingPage() {
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           <div className="p-4 bg-secondary-900/60 border border-secondary-800 rounded-xl hover:border-secondary-750 transition-colors">
-            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans">🎲 Classic Dice Games</h4>
+            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans flex items-center gap-1.5">
+              <Dices size={16} className="text-primary-500 shrink-0" />
+              <span>Classic Dice Games</span>
+            </h4>
             <p className="text-xs text-secondary-400 leading-relaxed">
               Enjoy authentic random physics-based dice rolls fully generated and synchronized by our backend server API.
             </p>
           </div>
           <div className="p-4 bg-secondary-900/60 border border-secondary-800 rounded-xl hover:border-secondary-750 transition-colors">
-            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans">👥 Play With Friends</h4>
+            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans flex items-center gap-1.5">
+              <Users size={16} className="text-primary-500 shrink-0" />
+              <span>Play With Friends</span>
+            </h4>
             <p className="text-xs text-secondary-400 leading-relaxed">
               Host online rooms for up to 4 players and send instant invite codes for fast matching across devices.
             </p>
           </div>
           <div className="p-4 bg-secondary-900/60 border border-secondary-800 rounded-xl hover:border-secondary-750 transition-colors">
-            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans">⚡ Real-time Play</h4>
+            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans flex items-center gap-1.5">
+              <Zap size={16} className="text-primary-500 shrink-0" />
+              <span>Real-time Play</span>
+            </h4>
             <p className="text-xs text-secondary-400 leading-relaxed">
               Watch token movements step-by-cell and slide down snakes or climb ladders with seamless CSS animations.
             </p>
           </div>
           <div className="p-4 bg-secondary-900/60 border border-secondary-800 rounded-xl hover:border-secondary-750 transition-colors">
-            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans">🔮 Hover Predictions</h4>
+            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans flex items-center gap-1.5">
+              <Sparkles size={16} className="text-primary-500 shrink-0" />
+              <span>Hover Predictions</span>
+            </h4>
             <p className="text-xs text-secondary-400 leading-relaxed">
               Strategize your turns by previewing where potential dice rolls (2-6) will land your token on the board grid.
             </p>
           </div>
           <div className="p-4 bg-secondary-900/60 border border-secondary-800 rounded-xl hover:border-secondary-750 transition-colors">
-            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans">🔊 Immersive Sound</h4>
+            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans flex items-center gap-1.5">
+              <Volume2 size={16} className="text-primary-500 shrink-0" />
+              <span>Immersive Sound</span>
+            </h4>
             <p className="text-xs text-secondary-400 leading-relaxed">
               Toggle spatial audio sound effects for board steps, climbing ladders, snake bites, and wins.
             </p>
           </div>
           <div className="p-4 bg-secondary-900/60 border border-secondary-800 rounded-xl hover:border-secondary-750 transition-colors">
-            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans">💻 Offline Mode</h4>
+            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans flex items-center gap-1.5">
+              <Laptop size={16} className="text-primary-500 shrink-0" />
+              <span>Offline Mode</span>
+            </h4>
             <p className="text-xs text-secondary-400 leading-relaxed">
               No internet connection? Play a local pass-and-play match on a single screen with friends and family.
             </p>
@@ -736,6 +764,7 @@ export default function LandingPage() {
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-secondary-800/40 text-[0.7rem] text-secondary-500 tracking-wide gap-4">
           <p>© {new Date().getFullYear()} Snake &amp; Ladder Online. All Rights Reserved. Play the ultimate free online multiplayer games.</p>
           <div className="flex gap-4">
+            <Link href="/blog" className="hover:text-secondary-400 no-underline text-secondary-500 font-bold">Blog Hub</Link>
             <Link href="/credits" className="hover:text-secondary-400 no-underline text-secondary-500">Credits</Link>
             <Link href="/licenses" className="hover:text-secondary-400 no-underline text-secondary-500">Licenses</Link>
             <Link href="/responsible-gaming" className="hover:text-secondary-400 no-underline text-secondary-500">Responsible Gaming</Link>

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import { allBlogPosts } from '@/app/blog/data/blogRegistry'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://snake-ladder-rouge.vercel.app'
@@ -30,6 +31,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 0.5,
     },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.8,
+    },
   ]
 
   const infoRoutes: MetadataRoute.Sitemap = slugs.map((slug) => ({
@@ -39,5 +46,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }))
 
-  return [...staticRoutes, ...infoRoutes]
+  const blogRoutes: MetadataRoute.Sitemap = allBlogPosts.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.7,
+  }))
+
+  return [...staticRoutes, ...infoRoutes, ...blogRoutes]
 }

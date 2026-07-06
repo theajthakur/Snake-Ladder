@@ -28,7 +28,7 @@ import PredictionPanel from '@/app/_components/PredictionPanel'
 import { soundManager } from '@/app/_utils/sound'
 import SoundToggleButton from '@/app/_components/SoundToggleButton'
 import GamingButton from '@/app/_components/GamingButton'
-import { Globe, Dices, AlertTriangle, Trophy, Home } from 'lucide-react'
+import { Globe, Dices, AlertTriangle, Trophy, Home, Loader2 } from 'lucide-react'
 
 
 const STEP_MS = 180
@@ -481,7 +481,7 @@ function OnlinePlayContent() {
     return (
       <div className="flex min-h-screen w-screen items-center justify-center bg-secondary-900 p-4 font-sans text-secondary-100">
         <div className="relative z-10 w-full max-w-md bg-secondary-800 border border-secondary-700 rounded-2xl p-8 shadow-sm text-center">
-          <div className="text-4xl mb-4 animate-bounce">⏳</div>
+          <Loader2 className="w-10 h-10 text-primary-500 animate-spin mx-auto mb-4" />
           <h1 className="text-xl font-black mb-2">Waiting for Players...</h1>
           <p className="text-xs text-secondary-400 mb-6 font-medium">
             Lobby limit: {gameState.player_size} players

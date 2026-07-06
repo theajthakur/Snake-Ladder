@@ -32,7 +32,7 @@
   --color-accent-900: #374427;
   
   --font-sans: var(--font-orbitron), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-orbitron), ui-monospace, SFMono-Regular, monospace;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --font-inter: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
