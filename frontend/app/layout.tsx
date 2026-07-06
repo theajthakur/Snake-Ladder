@@ -40,6 +40,9 @@ export const metadata: Metadata = {
   verification: {
     google: "CVboI0AsWSgy2u4xqQWPJNhxOA6lHJs2RBnosXV20PE",
   },
+  other: {
+    "google-adsense-account": "ca-pub-5937619927122903",
+  },
   alternates: {
     canonical: "/",
   },
