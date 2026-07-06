@@ -37,6 +37,9 @@ export const metadata: Metadata = {
     "free online games",
     "real-time multiplayer games",
   ],
+  verification: {
+    google: "CVboI0AsWSgy2u4xqQWPJNhxOA6lHJs2RBnosXV20PE",
+  },
   alternates: {
     canonical: "/",
   },
