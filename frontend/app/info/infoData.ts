@@ -176,7 +176,7 @@ export const infoPages: Record<string, InfoPage> = {
           'Q: Why is my dice locked?',
           'A: In accordance with traditional rules, you must roll a 6 to enter the board. Once you roll a 6, your token enters cell 1, and your turn passes. From then on, you can roll any number to move forward.',
           'Q: What is the target prediction display?',
-          'A: When it is your turn, hovering over the board highlights the outcome paths. It marks landing on a ladder in green and a snake head in red for potential rolls of 2 through 6. This helps you plan your moves.'
+          'A: When it is your turn, hovering over the board highlights the outcome paths. It marks landing on a ladder in green and a snake head in red for potential rolls of 1 through 6. This helps you plan your moves.'
         ]
       }
     ]
@@ -244,7 +244,7 @@ export const infoPages: Record<string, InfoPage> = {
       {
         heading: 'Strategic Hover Predictions',
         paragraphs: [
-          'We added a modern tactical twist to the game. When it is your turn, hovering over the board displays the landing positions for future rolls of 2 through 6. This lets you anticipate whether a roll is risky (landing on a snake) or highly rewarding (landing on a ladder).'
+          'We added a modern tactical twist to the game. When it is your turn, hovering over the board displays the landing positions for future rolls of 1 through 6. This lets you anticipate whether a roll is risky (landing on a snake) or highly rewarding (landing on a ladder).'
         ]
       },
       {
@@ -454,7 +454,7 @@ export const infoPages: Record<string, InfoPage> = {
         paragraphs: [
           '- Rebuilt the game layout using Next.js App Router and Tailwind CSS v4.',
           '- Created a Fast API backend with server-authoritative turn validation.',
-          '- Implemented the strategic hover prediction panel (rolls 2-6).',
+          '- Implemented the strategic hover prediction panel (rolls 1-6).',
           '- Integrated preloaded HTML5 Audio API for dice throws and board steps.'
         ]
       }

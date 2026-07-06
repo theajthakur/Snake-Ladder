@@ -688,7 +688,7 @@ export default function LandingPage() {
             },
             {
               q: "What are hover predictions?",
-              a: "The prediction system is a strategic tool designed to help you plan your moves. When it is your turn, hovering over the board highlights the outcome cells for all prospective dice roll values (2 to 6). It will highlight ladder climbs in green and snake traps in red."
+              a: "The prediction system is a strategic tool designed to help you plan your moves. When it is your turn, hovering over the board highlights the outcome cells for all prospective dice roll values (1 to 6). It will highlight ladder climbs in green and snake traps in red."
             },
             {
               q: "What devices are supported?",

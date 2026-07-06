@@ -200,12 +200,12 @@ export default function OfflinePlayPage() {
   const active = currentPlayer(gameState)
   const isLocked = gameState.positions[active.id] === 0
 
-  // Calculate predictions for the current player in range [2, 6]
+  // Calculate predictions for the current player in range [1, 6]
   const currentPos = gameState.positions[active.id]
   const predictions: BoardPrediction[] = []
 
   if (currentPos > 0) {
-    for (let d = 2; d <= 6; d++) {
+    for (let d = 1; d <= 6; d++) {
       const target = currentPos + d
       if (target <= 100) {
         if (snakeMap[target] !== undefined) {

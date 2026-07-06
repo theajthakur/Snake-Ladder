@@ -543,7 +543,7 @@ function OnlinePlayContent() {
   // Format predictions for turn display
   const predictions: BoardPrediction[] = []
   if (currentPos > 0 && isMyTurn) {
-    for (let d = 2; d <= 6; d++) {
+    for (let d = 1; d <= 6; d++) {
       const target = currentPos + d
       if (target <= 100) {
         if (snakeMap[target] !== undefined) {

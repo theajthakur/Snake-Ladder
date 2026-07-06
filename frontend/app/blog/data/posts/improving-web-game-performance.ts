@@ -13,8 +13,8 @@ export const post: BlogPost = {
     "role": "Lead Developer & Game Enthusiast",
     "avatar": "/logo.png"
   },
-  "publishDate": "2025-08-16",
-  "updatedDate": "2026-01-07",
+  "publishDate": "2026-04-15",
+  "updatedDate": "2026-06-26",
   "category": "development",
   "tags": [
     "development",
@@ -64,7 +64,7 @@ export const post: BlogPost = {
     {
       "heading": "Strategic UI: Dice Prediction Systems",
       "paragraphs": [
-        "Because classic board games rely entirely on dice outcomes, critics often suggest that player choice is minimal. To counter this and introduce tactical foresight, we engineered a 'Hover Prediction' system. On your turn, hovering over the dice displays colored guides mapping the cells for future rolls of 2 through 6.",
+        "Because classic board games rely entirely on dice outcomes, critics often suggest that player choice is minimal. To counter this and introduce tactical foresight, we engineered a 'Hover Prediction' system. On your turn, hovering over the dice displays colored guides mapping the cells for future rolls of 1 through 6.",
         "This visual overlay immediately highlights if a prospective roll lands you on a ladder base (green guide) or a snake head (red guide). By showing these pathways, the player transition switches from passive dice-rolling to active statistical calculation. You begin to anticipate opponent risks and measure your proximity to critical board zones."
       ]
     },
