@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!page) return {}
 
   return {
-    title: `${page.title} | Snake & Ladder Online`,
+    title: `${page.title}`,
     description: page.description,
     alternates: {
       canonical: `/${slug}`,
@@ -96,7 +96,7 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
 
       {/* ── Main Layout Wrapper ── */}
       <div className="flex-1 max-w-7xl w-full mx-auto px-4 md:px-8 py-8 flex flex-col lg:flex-row gap-8">
-        
+
         {/* ── Left Sidebar Navigation (Desktop) ── */}
         <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-6">
           {CATEGORIES.map((cat) => {
@@ -114,11 +114,10 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
                     <li key={page.slug}>
                       <Link
                         href={`/${page.slug}`}
-                        className={`block px-3 py-2 rounded-lg text-xs font-bold transition-all no-underline ${
-                          page.slug === activePage.slug
+                        className={`block px-3 py-2 rounded-lg text-xs font-bold transition-all no-underline ${page.slug === activePage.slug
                             ? 'bg-primary-950/20 border border-primary-800/40 text-primary-400 font-extrabold'
                             : 'text-secondary-400 hover:text-secondary-200 hover:bg-secondary-800/30'
-                        }`}
+                          }`}
                       >
                         {page.title}
                       </Link>
@@ -160,7 +159,7 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
                       {p}
                     </p>
                   ))}
-                  
+
                   {sect.listItems && sect.listItems.length > 0 && (
                     sect.listType === 'ordered' ? (
                       <ol className="list-decimal list-inside space-y-2 text-sm text-secondary-400 pl-2">
