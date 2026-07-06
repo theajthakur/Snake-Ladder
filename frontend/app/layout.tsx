@@ -89,6 +89,7 @@ export const metadata: Metadata = {
 };
 
 import CursorManager from "@/app/_components/CursorManager";
+import ConsentDialog from "@/app/_components/ConsentDialog";
 
 export default function RootLayout({
   children,
@@ -166,6 +167,29 @@ export default function RootLayout({
       lang="en"
       className={`${orbitron.variable} ${inter.variable} m-0 p-0`}
     >
+      <head>
+        {/* Google Consent Mode v2 Default Settings */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = function(){window.dataLayer.push(arguments);}
+              window.gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'denied'
+              });
+            `,
+          }}
+        />
+        {/* Google AdSense & Certified Consent Management Platform (CMP) */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5937619927122903"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className="m-0 p-0 bg-secondary-900 text-secondary-100 min-h-screen">
         <script
           type="application/ld+json"
@@ -183,6 +207,7 @@ export default function RootLayout({
         <Analytics />
         <SpeedInsights />
         {children}
+        <ConsentDialog />
       </body>
     </html>
   );
