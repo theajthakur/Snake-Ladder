@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     "real-time multiplayer games",
   ],
   verification: {
-    google: "CVboI0AsWSgy2u4xqQWPJNhxOA6lHJs2RBnosXV20PE",
+    google: "4KbWa_GQ_ndY6lWKMs3Q_4OPH2G3l3nGNULREVlY2uw",
   },
   other: {
     "google-adsense-account": "ca-pub-5937619927122903",
