@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const post = getBlogBySlug(slug)
   if (!post) return {}
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://snake-ladder-rouge.vercel.app'
+  const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://www.snakeladder.me'
 
   return {
     title: `${post.title} | Snake & Ladder Blog`,
@@ -94,7 +94,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       id: s.heading!.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
     }))
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://snake-ladder-rouge.vercel.app'
+  const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://www.snakeladder.me'
 
   // ── JSON-LD Structured Data ──
   const articleSchema = {

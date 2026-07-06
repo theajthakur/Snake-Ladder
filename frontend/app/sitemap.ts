@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 import { allBlogPosts } from '@/app/blog/data/blogRegistry'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://snake-ladder-rouge.vercel.app'
+  const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://www.snakeladder.me'
   
   const slugs = [
     'about', 'contact', 'privacy', 'terms', 'cookie-policy', 'disclaimer', 'faq',

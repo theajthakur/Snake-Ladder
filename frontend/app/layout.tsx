@@ -14,7 +14,7 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://snake-ladder-rouge.vercel.app";
+const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://www.snakeladder.me";
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),

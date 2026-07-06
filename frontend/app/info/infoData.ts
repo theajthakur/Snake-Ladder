@@ -52,7 +52,7 @@ export const infoPages: Record<string, InfoPage> = {
       {
         heading: 'Alternative Contact Methods',
         paragraphs: [
-          'Email support: support@snake-ladder-rouge.vercel.app',
+          'Email support: vijaysingh.handler@gmail.com',
           'GitHub issue tracker: https://github.com/theajthakur/Snake-Ladder/issues'
         ]
       }
