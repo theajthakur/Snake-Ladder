@@ -54,7 +54,9 @@ export default function BoardBackground({
     <img
       ref={imgRef}
       src={src}
-      alt="board background"
+      alt="Snake and Ladder Game Board Grid"
+      loading="eager"
+      decoding="async"
       onLoad={recalc}
       className="absolute inset-0 w-full h-full object-contain object-center"
     />

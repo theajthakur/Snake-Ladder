@@ -33,6 +33,7 @@
   
   --font-sans: var(--font-orbitron), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-orbitron), ui-monospace, SFMono-Regular, monospace;
+  --font-inter: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {

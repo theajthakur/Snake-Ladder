@@ -30,6 +30,12 @@ export default function LandingPage() {
 
   // Wizard state: 0=Welcome, 1=Mode, 2=OfflineConfig, 3=OnlineChoice, 4=CreateRoom, 5=JoinRoom, 6=WaitingRoom
   const [step, setStep] = useState<number>(0)
+
+  // FAQ Accordion State for SEO Section
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const toggleFaq = (idx: number) => {
+    setOpenFaq(openFaq === idx ? null : idx)
+  }
   
   // Offline State
   const [selectedCount, setSelectedCount] = useState<number>(2)
@@ -173,9 +179,10 @@ export default function LandingPage() {
   }, [step, waitingGameId, playerId])
 
   return (
-    <div className="flex min-h-screen w-screen items-center justify-center bg-secondary-900 p-4 font-sans text-secondary-100">
-      {/* ── Card Container ── */}
-      <div className="relative z-10 w-full max-w-md bg-secondary-800 border border-secondary-700 rounded-2xl p-8 shadow-sm min-h-[480px] flex flex-col justify-between">
+    <div className="flex flex-col items-center justify-start min-h-screen w-full bg-secondary-900 py-8 px-4 font-sans text-secondary-100 overflow-x-hidden">
+      {/* ── Main Interactive Section ── */}
+      <main className="flex-1 flex items-center justify-center w-full max-w-md py-6">
+        <div className="relative z-10 w-full bg-secondary-800 border border-secondary-700 rounded-2xl p-8 shadow-sm min-h-[480px] flex flex-col justify-between">
         
         {/* ── STEP 0: Welcome Screen ── */}
         {step === 0 && (
@@ -527,6 +534,164 @@ export default function LandingPage() {
         )}
 
       </div>
-    </div>
-  )
+    </main>
+
+    {/* ── SEO Rich Content Section ── */}
+    <section className="w-full max-w-4xl mt-16 pt-12 border-t border-secondary-800/80 font-inter text-secondary-300">
+      
+      {/* Row 1: Intro Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div>
+          <h2 className="text-xl font-bold font-sans text-primary-500 tracking-wide uppercase mb-3">
+            Play Snake &amp; Ladder Online
+          </h2>
+          <p className="text-sm leading-relaxed text-secondary-400">
+            Welcome to the ultimate web version of the classic <strong className="text-secondary-100">snake and ladder</strong> board game! 
+            Whether you are looking to kill time with <strong className="text-secondary-100">free online games</strong> or connect with family 
+            in a competitive <strong className="text-secondary-100">two-player online game</strong>, this platform brings the traditional 
+            dice game right to your browser. Climb high, avoid the slithering snakes, and compete to reach cell 100 first!
+          </p>
+        </div>
+        <div>
+          <h2 className="text-xl font-bold font-sans text-primary-500 tracking-wide uppercase mb-3">
+            Real-Time Multiplayer Browser Games
+          </h2>
+          <p className="text-sm leading-relaxed text-secondary-400">
+            Forget complicated setups. As one of the most engaging <strong className="text-secondary-100">multiplayer browser games</strong>, 
+            our app lets you <strong className="text-secondary-100">play with friends</strong> instantly. Host a private room, 
+            share your unique invite code, and enjoy a <strong className="text-secondary-100">real-time multiplayer game</strong>. 
+            Our server-authoritative system ensures fair roll generation and fully validated player turn transitions.
+          </p>
+        </div>
+      </div>
+
+      {/* Row 2: Features Grid */}
+      <div className="bg-secondary-850/50 border border-secondary-800 rounded-2xl p-6 md:p-8 mb-12 shadow-sm">
+        <h3 className="text-lg font-black font-sans text-secondary-100 tracking-wide uppercase mb-6 text-center">
+          Exciting Game Features
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="p-4 bg-secondary-900/60 border border-secondary-800 rounded-xl hover:border-secondary-750 transition-colors">
+            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans">🎲 Classic Dice Games</h4>
+            <p className="text-xs text-secondary-400 leading-relaxed">
+              Enjoy authentic random physics-based dice rolls fully generated and synchronized by our backend server API.
+            </p>
+          </div>
+          <div className="p-4 bg-secondary-900/60 border border-secondary-800 rounded-xl hover:border-secondary-750 transition-colors">
+            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans">👥 Play With Friends</h4>
+            <p className="text-xs text-secondary-400 leading-relaxed">
+              Host online rooms for up to 4 players and send instant invite codes for fast matching across devices.
+            </p>
+          </div>
+          <div className="p-4 bg-secondary-900/60 border border-secondary-800 rounded-xl hover:border-secondary-750 transition-colors">
+            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans">⚡ Real-time Play</h4>
+            <p className="text-xs text-secondary-400 leading-relaxed">
+              Watch token movements step-by-cell and slide down snakes or climb ladders with seamless CSS animations.
+            </p>
+          </div>
+          <div className="p-4 bg-secondary-900/60 border border-secondary-800 rounded-xl hover:border-secondary-750 transition-colors">
+            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans">🔮 Hover Predictions</h4>
+            <p className="text-xs text-secondary-400 leading-relaxed">
+              Strategize your turns by previewing where potential dice rolls (2-6) will land your token on the board grid.
+            </p>
+          </div>
+          <div className="p-4 bg-secondary-900/60 border border-secondary-800 rounded-xl hover:border-secondary-750 transition-colors">
+            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans">🔊 Immersive Sound</h4>
+            <p className="text-xs text-secondary-400 leading-relaxed">
+              Toggle spatial audio sound effects for board steps, climbing ladders, snake bites, and wins.
+            </p>
+          </div>
+          <div className="p-4 bg-secondary-900/60 border border-secondary-800 rounded-xl hover:border-secondary-750 transition-colors">
+            <h4 className="text-sm font-bold text-secondary-100 uppercase mb-2 font-sans">💻 Offline Mode</h4>
+            <p className="text-xs text-secondary-400 leading-relaxed">
+              No internet connection? Play a local pass-and-play match on a single screen with friends and family.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Row 3: Rules */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 items-center">
+        <div className="order-2 md:order-1">
+          <h3 className="text-lg font-bold font-sans text-secondary-100 uppercase mb-4 tracking-wide">
+            Official Snake and Ladder Rules
+          </h3>
+          <ol className="list-decimal list-inside text-sm text-secondary-400 space-y-3 leading-relaxed">
+            <li>
+              <strong className="text-secondary-200">Start of Game:</strong> All players begin off-board at position 0. You must roll a <strong className="text-primary-400">6</strong> to enter the board on cell 1.
+            </li>
+            <li>
+              <strong className="text-secondary-200">Ladders:</strong> Landing on the bottom of a ladder automatically climbs you up to the designated target cell.
+            </li>
+            <li>
+              <strong className="text-secondary-200">Snakes:</strong> Landing on a snake's head forces your token to slide down to the tip of its tail.
+            </li>
+            <li>
+              <strong className="text-secondary-200">Winning:</strong> To win, you must reach cell 100 with an <strong className="text-primary-400">exact dice roll</strong>. If your roll exceeds the remaining distance, your token remains in place.
+            </li>
+          </ol>
+        </div>
+        <div className="order-1 md:order-2 flex justify-center">
+          <img
+            src="/MAIN_LOGO.png"
+            alt="Snake and Ladder Game Board Mockup Illustration"
+            className="w-full max-w-sm rounded-2xl border border-secondary-800 shadow-lg select-none"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </div>
+
+      {/* Row 4: Accordion FAQ Section */}
+      <div className="border-t border-secondary-800/80 pt-8 mb-16">
+        <h3 className="text-lg font-black font-sans text-secondary-100 tracking-wide uppercase mb-6 text-center">
+          Frequently Asked Questions
+        </h3>
+        <div className="space-y-3 max-w-3xl mx-auto">
+          {[
+            {
+              q: "Is this online multiplayer board game free to play?",
+              a: "Yes! Our Snake & Ladder board game is entirely free to play. You can play both local offline pass-and-play sessions and real-time online multiplayer games without paying anything or downloading any additional client software."
+            },
+            {
+              q: "How do I play with friends in online multiplayer rooms?",
+              a: "Simply select 'Online Multiplayer' mode, enter your preferred nickname, and select 'Create Room'. You will receive a unique lobby invite code. Share this code with your friends so they can input it in the 'Join Room' screen to connect to your lobby instantly."
+            },
+            {
+              q: "What are hover predictions?",
+              a: "The prediction system is a strategic tool designed to help you plan your moves. When it is your turn, hovering over the board highlights the outcome cells for all prospective dice roll values (2 to 6). It will highlight ladder climbs in green and snake traps in red."
+            },
+            {
+              q: "What devices are supported?",
+              a: "Since the game is built using Next.js and fully optimized for web browsers, you can play it on any modern desktop, laptop, tablet, or mobile phone device."
+            }
+          ].map((item, idx) => (
+            <div key={idx} className="bg-secondary-850 border border-secondary-800 rounded-xl overflow-hidden">
+              <button
+                onClick={() => toggleFaq(idx)}
+                className="w-full text-left px-5 py-4 font-sans font-bold text-sm text-secondary-200 hover:text-secondary-100 flex justify-between items-center transition-colors cursor-pointer border-0 bg-transparent outline-none"
+              >
+                <span>{item.q}</span>
+                <span className="text-primary-500 font-mono text-base ml-2">
+                  {openFaq === idx ? "−" : "+"}
+                </span>
+              </button>
+              {openFaq === idx && (
+                <div className="px-5 pb-4 text-xs text-secondary-400 leading-relaxed border-t border-secondary-800/40 pt-2 bg-secondary-900/30">
+                  {item.a}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer info */}
+      <div className="text-center text-[0.7rem] text-secondary-500 font-sans tracking-wide mt-12 py-4 border-t border-secondary-800/40">
+        <p>© {new Date().getFullYear()} Snake &amp; Ladder Online. All Rights Reserved. Play the ultimate free online multiplayer games.</p>
+      </div>
+
+    </section>
+  </div>
+)
 }
