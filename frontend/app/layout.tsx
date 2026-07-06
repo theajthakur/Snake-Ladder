@@ -183,6 +183,21 @@ export default function RootLayout({
             `,
           }}
         />
+        {/* Google tag (gtag.js) */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-XSETY6LP77"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){window.dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-XSETY6LP77');
+            `,
+          }}
+        />
         {/* Google AdSense & Certified Consent Management Platform (CMP) */}
         <script
           async
