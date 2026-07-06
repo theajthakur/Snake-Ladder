@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import PlayerToken from '@/app/_components/PlayerToken'
 import GamingButton from '@/app/_components/GamingButton'
 import GamingModeButton from '@/app/_components/GamingModeButton'
@@ -686,10 +687,62 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Footer info */}
-      <div className="text-center text-[0.7rem] text-secondary-500 font-sans tracking-wide mt-12 py-4 border-t border-secondary-800/40">
-        <p>© {new Date().getFullYear()} Snake &amp; Ladder Online. All Rights Reserved. Play the ultimate free online multiplayer games.</p>
-      </div>
+      {/* ── Multi-Column SEO Link Grid Footer ── */}
+      <footer className="w-full mt-16 pt-8 border-t border-secondary-800/80 font-sans text-xs text-secondary-400">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8 text-left">
+          <div>
+            <h4 className="text-secondary-100 font-bold uppercase tracking-wider mb-3">Game Guides</h4>
+            <ul className="space-y-2 p-0 m-0 list-none">
+              <li><Link href="/how-to-play" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">How to Play</Link></li>
+              <li><Link href="/rules" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Official Rules</Link></li>
+              <li><Link href="/features" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Game Features</Link></li>
+              <li><Link href="/multiplayer-guide" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Multiplayer Guide</Link></li>
+              <li><Link href="/fair-play" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Fair Play (Dice Math)</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-secondary-100 font-bold uppercase tracking-wider mb-3">Legal &amp; Policy</h4>
+            <ul className="space-y-2 p-0 m-0 list-none">
+              <li><Link href="/privacy" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Terms &amp; Conditions</Link></li>
+              <li><Link href="/cookie-policy" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Cookie Policy</Link></li>
+              <li><Link href="/disclaimer" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Disclaimer</Link></li>
+              <li><Link href="/community-guidelines" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Community Rules</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-secondary-100 font-bold uppercase tracking-wider mb-3">Platform &amp; Dev</h4>
+            <ul className="space-y-2 p-0 m-0 list-none">
+              <li><Link href="/browser-compatibility" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Browser Support</Link></li>
+              <li><Link href="/supported-devices" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Supported Devices</Link></li>
+              <li><Link href="/accessibility" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Accessibility</Link></li>
+              <li><Link href="/changelog" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Changelog</Link></li>
+              <li><Link href="/roadmap" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Roadmap</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-secondary-100 font-bold uppercase tracking-wider mb-3">Support &amp; Feedback</h4>
+            <ul className="space-y-2 p-0 m-0 list-none">
+              <li><Link href="/contact" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Contact Us</Link></li>
+              <li><Link href="/faq" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">FAQ</Link></li>
+              <li><Link href="/help" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Help Center</Link></li>
+              <li><Link href="/report-bug" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Report a Bug</Link></li>
+              <li><Link href="/feedback" className="hover:text-primary-500 transition-colors no-underline text-secondary-400">Send Feedback</Link></li>
+            </ul>
+          </div>
+        </div>
+        
+        {/* Under-Footer */}
+        <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-secondary-800/40 text-[0.7rem] text-secondary-500 tracking-wide gap-4">
+          <p>© {new Date().getFullYear()} Snake &amp; Ladder Online. All Rights Reserved. Play the ultimate free online multiplayer games.</p>
+          <div className="flex gap-4">
+            <Link href="/credits" className="hover:text-secondary-400 no-underline text-secondary-500">Credits</Link>
+            <Link href="/licenses" className="hover:text-secondary-400 no-underline text-secondary-500">Licenses</Link>
+            <Link href="/responsible-gaming" className="hover:text-secondary-400 no-underline text-secondary-500">Responsible Gaming</Link>
+            <Link href="/safety-privacy" className="hover:text-secondary-400 no-underline text-secondary-500">Safety &amp; Privacy</Link>
+          </div>
+        </div>
+      </footer>
 
     </section>
   </div>
