@@ -112,14 +112,28 @@ export default function BoardGrid({
 
               {/* Player tokens in this cell */}
               {here.length > 0 && (
-                <div className="flex flex-wrap gap-0.5 items-center justify-center flex-1 self-center">
-                  {here.map((p) => {
-                    const sz = here.length === 1 ? 20 : here.length <= 2 ? 16 : 14
+                <div
+                  className="relative flex items-center justify-center"
+                  style={{
+                    width: here.length === 1 ? 22 : 20 + (here.length - 1) * 4,
+                    height: here.length === 1 ? 22 : 20 + (here.length - 1) * 4,
+                  }}
+                >
+                  {here.map((p, index) => {
+                    const sz = here.length === 1 ? 22 : here.length === 2 ? 20 : here.length === 3 ? 18 : 16
+                    const offset = index * 4
                     return (
                       <PlayerToken
                         key={p.id}
                         playerId={p.id}
                         size={sz}
+                        style={{
+                          position: 'absolute',
+                          left: `${offset}px`,
+                          top: `${offset}px`,
+                          zIndex: index,
+                          filter: 'drop-shadow(0px 2px 3px rgba(0,0,0,0.5))',
+                        }}
                       />
                     )
                   })}

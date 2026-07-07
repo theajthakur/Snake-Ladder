@@ -13,7 +13,7 @@
  * The actual die face is always driven by the `value` prop.
  * No internal display-state that can race with React's scheduler.
  */
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { PLAYERS } from '@/app/data/players'
 import PlayerToken from '@/app/_components/PlayerToken'
 import type { GamePlayer } from '@/app/_store/gameStore'
@@ -124,6 +124,9 @@ export default function DiceRoller({
   const config     = PLAYERS[currentPlayer.id]
   const isDisabled = rolling || disabled
 
+  const [hovered, setHovered] = useState(false)
+  const [focused, setFocused] = useState(false)
+
   // Space-bar listener
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -153,44 +156,48 @@ export default function DiceRoller({
         </span>
       </div>
 
-      {/* ── Dice area ──
-            rolling=true  → CSS animated overlay (all 6 faces, pure keyframes)
-            rolling=false → exact API value face (no state, direct from prop)
-      ── */}
-      <div className="py-5">
+      {/* ── Dice Button ── */}
+      <button
+        id="roll-dice-btn"
+        onClick={() => { if (!isDisabled) onRoll() }}
+        disabled={isDisabled}
+        title={isDisabled ? (rolling ? 'Rolling…' : 'Wait turn') : 'Click to roll dice'}
+        className={`group relative my-5 p-0 bg-transparent border-0 rounded-[18%] transition-all duration-200 outline-none ${
+          isDisabled
+            ? 'cursor-not-allowed opacity-75'
+            : 'cursor-pointer hover:scale-105 active:scale-95'
+        }`}
+        style={{
+          boxShadow: !isDisabled
+            ? (hovered || focused)
+              ? `0 0 25px 4px ${config.color}66, inset 0 0 12px ${config.color}22`
+              : `0 0 15px 1px ${config.color}33`
+            : undefined,
+          transform: !isDisabled && (hovered || focused) ? 'scale(1.05)' : undefined,
+        }}
+        onMouseEnter={() => { if (!isDisabled) setHovered(true) }}
+        onMouseLeave={() => setHovered(false)}
+        onFocus={() => { if (!isDisabled) setFocused(true) }}
+        onBlur={() => setFocused(false)}
+      >
         {rolling ? (
           <RollingOverlay color={config.color} size={100} />
         ) : (
           <Face face={Math.min(6, Math.max(1, value || 1))} color={config.color} size={100} />
         )}
-      </div>
+      </button>
 
       {/* ── Last rolled label ── */}
       {!rolling && value >= 1 && (
-        <div className="text-[0.6rem] font-bold tracking-wider text-secondary-400 -mt-3 mb-1">
+        <div className="text-[0.6rem] font-bold tracking-wider text-secondary-400 mb-2">
           Rolled: <span style={{ color: config.color }}>{value}</span>
         </div>
       )}
 
-      {/* ── Roll button ── */}
-      <div className="w-full px-3.5 pb-3.5 box-border">
-        <button
-          id="roll-dice-btn"
-          onClick={() => { if (!isDisabled) onRoll() }}
-          disabled={isDisabled}
-          style={{ backgroundColor: isDisabled ? undefined : config.color }}
-          className={`w-full py-2.5 rounded-lg text-xs font-extrabold tracking-wider transition-colors font-sans border-0 ${
-            isDisabled
-              ? 'bg-secondary-800 text-secondary-500 cursor-not-allowed'
-              : 'text-white cursor-pointer hover:opacity-90'
-          }`}
-        >
-          {rolling ? 'Rolling…' : 'Roll Dice'}
-        </button>
-        <p className="mt-2 text-center text-[0.55rem] text-secondary-500 tracking-wider font-sans">
-          Click or press Space
-        </p>
-      </div>
+      {/* ── Instruction text ── */}
+      <p className="mb-4 text-center text-[0.6rem] text-secondary-500 font-extrabold tracking-widest font-sans uppercase">
+        {isDisabled ? (rolling ? 'Rolling…' : 'Wait turn') : 'Click dice or press Space'}
+      </p>
     </div>
   )
 }
