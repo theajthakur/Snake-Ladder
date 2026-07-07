@@ -14,7 +14,9 @@ import {
   startGame,
   joinGame,
   getGameDetail,
+  getOpenRooms,
   type GamePlayerInfo,
+  type OpenRoomInfo,
 } from '@/lib/game'
 
 const COUNT_OPTIONS = [1, 2, 3, 4] as const
@@ -69,6 +71,61 @@ export default function LandingPage() {
   })
   const [onlineSize, setOnlineSize] = useState<number>(2)
   const [joinRoomId, setJoinRoomId] = useState<string>('')
+
+  // Open Lobbies State
+  const [openRooms, setOpenRooms] = useState<OpenRoomInfo[]>([])
+  const [loadingRooms, setLoadingRooms] = useState<boolean>(false)
+
+  const loadOpenRooms = async () => {
+    setLoadingRooms(true)
+    try {
+      const rooms = await getOpenRooms()
+      setOpenRooms(rooms)
+    } catch (err) {
+      console.error('Failed to load open rooms:', err)
+    } finally {
+      setLoadingRooms(false)
+    }
+  }
+
+  useEffect(() => {
+    if (step === 5) {
+      loadOpenRooms()
+    }
+  }, [step])
+
+  const handleDirectJoin = async (targetGameId: string) => {
+    if (!onlineName.trim()) {
+      setErrorMsg('Please enter your nickname.')
+      return
+    }
+    setErrorMsg(null)
+    setLoading(true)
+    try {
+      const joinRes = await joinGame(targetGameId, onlineName.trim())
+      const pId = joinRes.game.player_id
+      const gId = targetGameId
+
+      localStorage.setItem('gameId', gId)
+      localStorage.setItem('curPlayerId', pId)
+      localStorage.setItem('currentUserId', pId)
+
+      setWaitingGameId(gId)
+      setPlayerId(pId)
+
+      // Fetch lobby details to get size
+      const detail = await getGameDetail(gId)
+      localStorage.setItem('game_player_size', String(detail.game_size))
+      setWaitingGameSize(detail.game_size)
+      setWaitingPlayers(detail.players)
+
+      setStep(6) // Transition to waiting room
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Failed to join online room.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // Waiting Room State
   const [waitingPlayers, setWaitingPlayers] = useState<GamePlayerInfo[]>([])
@@ -473,6 +530,61 @@ export default function LandingPage() {
                   placeholder="Enter Session UUID"
                   className="w-full bg-secondary-900 border border-secondary-700 focus:border-secondary-600 rounded-xl px-3 py-2.5 text-xs font-mono outline-none text-white"
                 />
+              </div>
+
+              {/* Open Rooms Table */}
+              <div className="mt-6 border-t border-secondary-700/50 pt-5">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-[0.65rem] font-black uppercase text-secondary-400 tracking-wider">
+                    Available Open Lobbies
+                  </label>
+                  <button
+                    onClick={loadOpenRooms}
+                    disabled={loadingRooms}
+                    className="text-[0.58rem] font-bold text-primary-400 hover:text-primary-300 bg-transparent border-0 outline-none cursor-pointer flex items-center gap-1"
+                  >
+                    {loadingRooms ? 'Refreshing...' : 'Refresh list'}
+                  </button>
+                </div>
+
+                {openRooms.length === 0 ? (
+                  <div className="text-[0.62rem] text-secondary-500 italic py-4 bg-secondary-900/40 rounded-xl text-center border border-secondary-700/30">
+                    No open lobbies found. Host one to start!
+                  </div>
+                ) : (
+                  <div className="border border-secondary-700/50 rounded-xl overflow-hidden bg-secondary-900/30 max-h-48 overflow-y-auto">
+                    <table className="w-full border-collapse text-left text-[0.65rem]">
+                      <thead>
+                        <tr className="bg-secondary-900/80 border-b border-secondary-700/60 text-secondary-400 font-bold uppercase text-[0.55rem] tracking-wider">
+                          <th className="py-2 px-3">Room ID</th>
+                          <th className="py-2 px-2 text-center">Players</th>
+                          <th className="py-2 px-3 text-right">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-secondary-700/35">
+                        {openRooms.map((room) => (
+                          <tr key={room.game_id} className="hover:bg-secondary-850/40 transition-colors">
+                            <td className="py-2.5 px-3 font-mono font-bold text-primary-400 max-w-[120px] truncate" title={room.game_id}>
+                              {room.game_id.slice(0, 8)}...
+                            </td>
+                            <td className="py-2.5 px-2 text-center text-secondary-300 font-semibold">
+                              {room.player_count} / {room.game_size}
+                            </td>
+                            <td className="py-2.5 px-3 text-right">
+                              <button
+                                onClick={() => handleDirectJoin(room.game_id)}
+                                disabled={loading}
+                                className="px-3 py-1 bg-primary-600 hover:bg-primary-500 text-white font-extrabold rounded-lg cursor-pointer transition-colors border-0 text-[0.55rem]"
+                              >
+                                Join
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             </div>
 

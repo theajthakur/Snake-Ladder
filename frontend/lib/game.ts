@@ -128,3 +128,19 @@ export async function getGameDetail(gameId: string): Promise<GameDetailResponse>
   });
   return response.data;
 }
+
+export interface OpenRoomInfo {
+  gameId: string;
+  game_id: string;
+  players: string[];
+  player_count: number;
+  game_size: number;
+}
+
+/**
+ * Fetch all open game rooms that are not full
+ */
+export async function getOpenRooms(): Promise<OpenRoomInfo[]> {
+  const response = await api.get<OpenRoomInfo[]>('/game/open-rooms');
+  return response.data;
+}
