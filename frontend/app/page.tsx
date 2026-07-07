@@ -70,6 +70,7 @@ export default function LandingPage() {
     return GAMING_NAMES[randomIdx];
   })
   const [onlineSize, setOnlineSize] = useState<number>(2)
+  const [onlineIsPublic, setOnlineIsPublic] = useState<boolean>(true)
   const [joinRoomId, setJoinRoomId] = useState<string>('')
 
   // Open Lobbies State
@@ -164,7 +165,7 @@ export default function LandingPage() {
     setErrorMsg(null)
     setLoading(true)
     try {
-      const roomRes = await startGame(onlineSize)
+      const roomRes = await startGame(onlineSize, onlineIsPublic)
       const gId = roomRes.game_id
       const pSize = roomRes.player_size
 
@@ -460,6 +461,35 @@ export default function LandingPage() {
                       {sz} Players
                     </button>
                   ))}
+                </div>
+              </div>
+
+              {/* Lobby Visibility */}
+              <div className="mb-4">
+                <label className="block mb-1.5 text-[0.6rem] font-bold uppercase text-secondary-500">
+                  Lobby Visibility
+                </label>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setOnlineIsPublic(true)}
+                    className={`flex-1 py-2 text-xs font-bold rounded-lg border cursor-pointer ${
+                      onlineIsPublic
+                        ? 'border-primary-500 bg-primary-950/20 text-primary-400'
+                        : 'border-secondary-700 bg-secondary-900/50 text-secondary-400 hover:border-secondary-600'
+                    }`}
+                  >
+                    Public Room
+                  </button>
+                  <button
+                    onClick={() => setOnlineIsPublic(false)}
+                    className={`flex-1 py-2 text-xs font-bold rounded-lg border cursor-pointer ${
+                      !onlineIsPublic
+                        ? 'border-primary-500 bg-primary-950/20 text-primary-400'
+                        : 'border-secondary-700 bg-secondary-900/50 text-secondary-400 hover:border-secondary-600'
+                    }`}
+                  >
+                    Private Room
+                  </button>
                 </div>
               </div>
             </div>

@@ -70,7 +70,7 @@ def index():
 )
 def start_game_endpoint(request: StartGameRequestBody):
     try:
-        game = start_game(request.player_size)
+        game = start_game(request.player_size,request.is_public)
 
         return {
             "message": "Game started",
@@ -267,7 +267,7 @@ def get_open_rooms():
     open_rooms = []
     for g_id, game in games.items():
         joined_count = len(game.player_statuses)
-        if joined_count < game.player_size:
+        if joined_count < game.player_size and game.is_public:
             player_names = [player.name for player in game.player_statuses.values()]
             open_rooms.append({
                 "gameId": game.game_id,

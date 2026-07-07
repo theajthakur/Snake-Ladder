@@ -78,6 +78,7 @@ function OnlinePlayContent() {
   })
   const [joinInput, setJoinInput] = useState('')
   const [playerCount, setPlayerCount] = useState<number>(2)
+  const [isPublic, setIsPublic] = useState<boolean>(true)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [diceValue, setDiceValue] = useState<number>(1)
   const [diceRolling, setDiceRolling] = useState(false)
@@ -246,7 +247,7 @@ function OnlinePlayContent() {
     }
     setErrorMsg(null)
     try {
-      const gameRes = await apiStartGame(playerCount)
+      const gameRes = await apiStartGame(playerCount, isPublic)
       const playerRes = await apiJoinGame(gameRes.game_id, onlineName.trim())
 
       const nextGid = gameRes.game_id
@@ -441,6 +442,30 @@ function OnlinePlayContent() {
                   {count} Players
                 </button>
               ))}
+            </div>
+
+            {/* Lobby Visibility */}
+            <div className="flex gap-2 mb-3">
+              <button
+                onClick={() => setIsPublic(true)}
+                className={`flex-1 py-2 text-xs font-bold rounded-lg border cursor-pointer ${
+                  isPublic
+                    ? 'border-primary-500 bg-primary-950/20 text-primary-400'
+                    : 'border-secondary-700 bg-secondary-900/50 text-secondary-400 hover:border-secondary-600'
+                }`}
+              >
+                Public Room
+              </button>
+              <button
+                onClick={() => setIsPublic(false)}
+                className={`flex-1 py-2 text-xs font-bold rounded-lg border cursor-pointer ${
+                  !isPublic
+                    ? 'border-primary-500 bg-primary-950/20 text-primary-400'
+                    : 'border-secondary-700 bg-secondary-900/50 text-secondary-400 hover:border-secondary-600'
+                }`}
+              >
+                Private Room
+              </button>
             </div>
             <button
               onClick={handleHost}

@@ -20,6 +20,7 @@ class Game:
     player_statuses: Dict[str,PlayerStatus] = field(default_factory=dict)
     current_turn: str = ""
     player_size: int = 2
+    is_public: bool = True
     game_started:bool = False
     winner: Optional[str] = None
     last_roll_value: int = 0
@@ -30,7 +31,7 @@ class Game:
 games: Dict[str, Game] = {}
 
 
-def start_game(player_size: int) -> str:
+def start_game(player_size: int, is_public: bool = True) -> Game:
     game_id = str(uuid4().hex[:4])
     while game_id in games:
         game_id = str(uuid4().hex[:5])
@@ -41,7 +42,8 @@ def start_game(player_size: int) -> str:
 
     games[game_id] = Game(
         game_id=game_id,
-        player_size=size
+        player_size=size,
+        is_public=is_public
     )
 
     return games.get(game_id)

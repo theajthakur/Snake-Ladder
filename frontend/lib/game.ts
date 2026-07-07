@@ -54,10 +54,12 @@ export interface SystemStatusResponse {
 /**
  * Start a new game lobby
  * @param playerSize Number of players (1 to 4)
+ * @param isPublic Whether the lobby should be publicly listable
  */
-export async function startGame(playerSize: number): Promise<StartGameResponse> {
+export async function startGame(playerSize: number, isPublic: boolean = true): Promise<StartGameResponse> {
   const response = await api.post<StartGameResponse>('/start-game', {
     player_size: playerSize,
+    is_public: isPublic,
   });
   return response.data;
 }

@@ -12,6 +12,11 @@ class StartGameRequestBody(BaseModel):
         le=4,
         examples=[2]
     )
+    is_public: bool = Field(
+        True,
+        description="Whether the game is public or private",
+        examples=[True]
+    )
 
 class StartGameResponse(BaseModel):
     message: str = Field(..., description="Success message confirming the game started", examples=["Game started"])
