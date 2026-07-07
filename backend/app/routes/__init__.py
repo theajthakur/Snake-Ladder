@@ -15,7 +15,8 @@ from .schemas import (
     IndexResponse,
     ErrorResponse,
     GameDetailResponse,
-    GameModel
+    GameModel,
+    OpenRoomInfo
 )
 
 api_router = APIRouter()
@@ -254,3 +255,25 @@ def game_detail_endpoint(game_id: str):
         "players": players_list,
         "game_size": game.player_size
     }
+
+@api_router.get(
+    "/game/open-rooms",
+    response_model=list[OpenRoomInfo],
+    summary="List open game rooms",
+    description="Returns details for all active game lobbies that are not yet full.",
+    tags=["Game Management"]
+)
+def get_open_rooms():
+    open_rooms = []
+    for g_id, game in games.items():
+        joined_count = len(game.player_statuses)
+        if joined_count < game.player_size:
+            player_names = [player.name for player in game.player_statuses.values()]
+            open_rooms.append({
+                "gameId": game.game_id,
+                "game_id": game.game_id,
+                "players": player_names,
+                "player_count": joined_count,
+                "game_size": game.player_size
+            })
+    return open_rooms

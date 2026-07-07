@@ -76,3 +76,10 @@ class GameDetailResponse(BaseModel):
     game_id: str = Field(..., description="The unique session ID", examples=["550e8400-e29b-41d4-a716-446655440000"])
     players: list[GamePlayerInfo] = Field(..., description="List of players currently in this game")
     game_size: int = Field(..., description="The maximum player capacity", examples=[2])
+
+class OpenRoomInfo(BaseModel):
+    gameId: str = Field(..., description="The unique session ID", examples=["550e8400-e29b-41d4-a716-446655440000"])
+    game_id: str = Field(..., description="The unique session ID (snake_case)", examples=["550e8400-e29b-41d4-a716-446655440000"])
+    players: list[str] = Field(..., description="List of participated player names", examples=[["VijayAlpha"]])
+    player_count: int = Field(..., description="Current count of joined players", examples=[1])
+    game_size: int = Field(..., description="Maximum room capacity", examples=[2])
