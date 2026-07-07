@@ -19,12 +19,15 @@ const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://www.snakeladder
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Play Snake & Ladder Online - Multiplayer Board Game",
-    template: "%s | Snake & Ladder Online",
+    default: "🐍 Play Snake & Ladder Online - Multiplayer Board Game 🎲",
+    template: "%s | Snake & Ladder Online 🐍",
   },
   description:
-    "Play Snake & Ladder online! Connect in real-time multiplayer lobbies or play local offline games with friends. Roll the dice, climb ladders, and dodge snakes.",
+    "Play browser snakes and ladders no download! A simple snakes and ladders for students and friends, and a customizable snakes and ladders game with real-time multiplayer lobbies.",
   keywords: [
+    "play browser snakes and ladders no download",
+    "simple snakes and ladders for students",
+    "customizable snakes and ladders game",
     "online multiplayer games",
     "multiplayer browser games",
     "snake and ladder",
@@ -56,9 +59,9 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: baseUrl,
-    title: "Play Snake & Ladder Online - Multiplayer Board Game",
+    title: "🐍 Play Snake & Ladder Online - Multiplayer Board Game 🎲",
     description:
-      "Experience the ultimate Snake & Ladder board game online! Play real-time multiplayer matches with friends or local offline games. Roll the dice and reach cell 100!",
+      "Play browser snakes and ladders no download! A simple snakes and ladders for students and a customizable snakes and ladders game with real-time multiplayer lobbies.",
     siteName: "Snake & Ladder Online",
     images: [
       {
@@ -71,9 +74,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Play Snake & Ladder Online - Multiplayer Board Game",
+    title: "🐍 Play Snake & Ladder Online - Multiplayer Board Game 🎲",
     description:
-      "Experience the ultimate Snake & Ladder board game online! Play real-time multiplayer matches with friends or local offline games.",
+      "Play browser snakes and ladders no download! A simple snakes and ladders for students and a customizable snakes and ladders game with real-time multiplayer.",
     images: ["/og-image.png"],
   },
   robots: {
@@ -109,14 +112,20 @@ export default function RootLayout({
     "@type": "VideoGame",
     "name": "Snake & Ladder Online",
     "description":
-      "An interactive digital version of the classic Snake & Ladder board game. Features real-time online multiplayer lobby rooms and local offline play with up to 4 players.",
+      "Play browser snakes and ladders no download! A simple snakes and ladders for students and a customizable snakes and ladders game with real-time multiplayer.",
     "genre": ["Board Game", "Dice Game", "Multiplayer Game"],
     "playMode": ["SinglePlayer", "MultiPlayer", "CoOp"],
+    "numberOfPlayers": {
+      "@type": "QuantitativeValue",
+      "minValue": "1",
+      "maxValue": "4"
+    },
     "applicationCategory": "Game",
     "operatingSystem": "Web Browser",
     "gamePlatform": "Web Browser",
     "url": baseUrl,
     "image": `${baseUrl}/logo.png`,
+    "keywords": "play browser snakes and ladders no download, simple snakes and ladders for students, customizable snakes and ladders game",
     "author": {
       "@type": "Organization",
       "name": "Snake & Ladder Multiplayer Team",

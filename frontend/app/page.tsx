@@ -7,7 +7,7 @@ import PlayerToken from '@/app/_components/PlayerToken'
 import GamingButton from '@/app/_components/GamingButton'
 import GamingModeButton from '@/app/_components/GamingModeButton'
 import OfflineSetup from '@/app/_components/OfflineSetup'
-import { Gamepad2, Globe, AlertTriangle, RotateCw, Dices, Users, Zap, Sparkles, Volume2, Laptop } from 'lucide-react'
+import { Gamepad2, Globe, AlertTriangle, RotateCw, Dices, Users, Zap, Sparkles, Volume2, Laptop, Star } from 'lucide-react'
 import { PLAYERS } from '@/app/data/players'
 import { createNewGame, saveGameState, type GamePlayer } from '@/app/_store/gameStore'
 import {
@@ -31,6 +31,26 @@ export default function LandingPage() {
 
   // Wizard state: 0=Welcome, 1=Mode, 2=OfflineConfig, 3=OnlineChoice, 4=CreateRoom, 5=JoinRoom, 6=WaitingRoom
   const [step, setStep] = useState<number>(0)
+
+  // GitHub Stars State
+  const [githubStars, setGithubStars] = useState<number | null>(null)
+
+  useEffect(() => {
+    const fetchStars = async () => {
+      try {
+        const response = await fetch('https://api.github.com/repos/theajthakur/Snake-Ladder')
+        if (response.ok) {
+          const data = await response.json()
+          if (data && typeof data.stargazers_count === 'number') {
+            setGithubStars(data.stargazers_count)
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch GitHub stars:', error)
+      }
+    }
+    fetchStars()
+  }, [])
 
   // FAQ Accordion State for SEO Section
   const [openFaq, setOpenFaq] = useState<number | null>(null)
@@ -188,6 +208,24 @@ export default function LandingPage() {
         {/* ── STEP 0: Welcome Screen ── */}
         {step === 0 && (
           <div className="flex-1 flex flex-col justify-between">
+            {/* GitHub Star Button */}
+            <a
+              href="https://github.com/theajthakur/Snake-Ladder"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-2.5 py-1.5 bg-secondary-900/80 hover:bg-secondary-900 border border-secondary-700 hover:border-primary-500/50 rounded-xl text-[0.65rem] font-bold text-secondary-200 hover:text-white transition-all duration-200 hover:scale-[1.03] group shadow-lg"
+            >
+              <svg className="w-3 h-3 fill-current text-secondary-400 group-hover:text-white transition-colors" viewBox="0 0 24 24" aria-hidden="true">
+                <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.137 20.162 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+              </svg>
+              <span>Star</span>
+              <span className="w-[1px] h-3 bg-secondary-700" />
+              <Star size={11} className="text-amber-400 fill-amber-400 group-hover:scale-110 transition-transform duration-200" />
+              <span className="font-mono text-secondary-300 group-hover:text-amber-300 transition-colors">
+                {githubStars !== null ? githubStars : '...'}
+              </span>
+            </a>
+
             <div className="text-center mt-6 flex flex-col items-center">
               <img
                 src="/logo.png"
@@ -554,24 +592,22 @@ export default function LandingPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <div>
           <h2 className="text-xl font-bold font-sans text-primary-500 tracking-wide uppercase mb-3">
-            Play Snake &amp; Ladder Online
+            Play Browser Snakes and Ladders No Download
           </h2>
           <p className="text-sm leading-relaxed text-secondary-400">
-            Welcome to the ultimate web version of the classic <strong className="text-secondary-100">snake and ladder</strong> board game! 
-            Whether you are looking to kill time with <strong className="text-secondary-100">free online games</strong> or connect with family 
-            in a competitive <strong className="text-secondary-100">two-player online game</strong>, this platform brings the traditional 
-            dice game right to your browser. Climb high, avoid the slithering snakes, and compete to reach cell 100 first!
+            Welcome to the ultimate web portal to <strong className="text-secondary-100">play browser snakes and ladders no download</strong> required! 
+            Enjoy a seamless, instant-play experience right in your web browser. This classic dice game allows you to connect and play with friends 
+            or family without the hassle of app stores or installations. Climb high, avoid the snakes, and race to cell 100 on any device!
           </p>
         </div>
         <div>
           <h2 className="text-xl font-bold font-sans text-primary-500 tracking-wide uppercase mb-3">
-            Real-Time Multiplayer Browser Games
+            Customizable Snakes and Ladders Game
           </h2>
           <p className="text-sm leading-relaxed text-secondary-400">
-            Forget complicated setups. As one of the most engaging <strong className="text-secondary-100">multiplayer browser games</strong>, 
-            our app lets you <strong className="text-secondary-100">play with friends</strong> instantly. Host a private room, 
-            share your unique invite code, and enjoy a <strong className="text-secondary-100">real-time multiplayer game</strong>. 
-            Our server-authoritative system ensures fair roll generation and fully validated player turn transitions.
+            Looking for a <strong className="text-secondary-100">customizable snakes and ladders game</strong>? Our digital board allows you 
+            to set player counts (from 1 to 4 players) and customize nicknames for every participant. Whether you want to play a local offline 
+            pass-and-play match or set up a private room for real-time multiplayer, it is fully tailorable to your group's preferences.
           </p>
         </div>
       </div>
@@ -643,8 +679,16 @@ export default function LandingPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 items-center">
         <div className="order-2 md:order-1">
           <h3 className="text-lg font-bold font-sans text-secondary-100 uppercase mb-4 tracking-wide">
-            Official Snake and Ladder Rules
+            Simple Snakes and Ladders for Students
           </h3>
+          <p className="text-sm leading-relaxed text-secondary-400 mb-4">
+            This platform acts as a <strong className="text-secondary-100">simple snakes and ladders for students</strong> and children. 
+            It is a fantastic educational tool for learning basic counting, turn-taking, probability, and board coordination. 
+            With no installations or accounts needed, teachers and students can load up the board in seconds and start playing immediately.
+          </p>
+          <h4 className="text-sm font-bold font-sans text-secondary-100 uppercase mb-2 tracking-wide">
+            Official Game Rules
+          </h4>
           <ol className="list-decimal list-inside text-sm text-secondary-400 space-y-3 leading-relaxed">
             <li>
               <strong className="text-secondary-200">Start of Game:</strong> All players begin off-board at position 0. You must roll a <strong className="text-primary-400">6</strong> to enter the board on cell 1.
