@@ -2,9 +2,7 @@ import React from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { infoPages } from '@/app/info/infoData'
-import ContactForm from '@/app/info/ContactForm'
-import BugForm from '@/app/info/BugForm'
-import FeedbackForm from '@/app/info/FeedbackForm'
+import SupportHub from '@/app/info/SupportHub'
 import { BookOpen, Scale, Terminal, HeartHandshake, ArrowLeft, Home } from 'lucide-react'
 
 // Define static slugs to pre-render at build time
@@ -181,28 +179,7 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
               {/* Dynamic Interactive Form Integrations */}
               {activePage.slug === 'contact' && (
                 <section className="mt-8 pt-8 border-t border-secondary-800/40">
-                  <h2 className="text-lg font-bold font-sans text-secondary-100 uppercase tracking-wide mb-4">
-                    Send General Message
-                  </h2>
-                  <ContactForm />
-                </section>
-              )}
-
-              {activePage.slug === 'report-bug' && (
-                <section className="mt-8 pt-8 border-t border-secondary-800/40">
-                  <h2 className="text-lg font-bold font-sans text-secondary-100 uppercase tracking-wide mb-4">
-                    File a Telemetry Bug Report
-                  </h2>
-                  <BugForm />
-                </section>
-              )}
-
-              {activePage.slug === 'feedback' && (
-                <section className="mt-8 pt-8 border-t border-secondary-800/40">
-                  <h2 className="text-lg font-bold font-sans text-secondary-100 uppercase tracking-wide mb-4">
-                    Share Platform Experience Rating
-                  </h2>
-                  <FeedbackForm />
+                  <SupportHub />
                 </section>
               )}
             </div>

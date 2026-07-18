@@ -5,11 +5,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://www.snakeladder.me'
   
   const slugs = [
-    'about', 'contact', 'privacy', 'terms', 'cookie-policy', 'disclaimer', 'faq',
-    'how-to-play', 'rules', 'features', 'multiplayer-guide', 'fair-play',
-    'browser-compatibility', 'supported-devices', 'accessibility', 'community-guidelines',
-    'responsible-gaming', 'safety-privacy', 'changelog', 'roadmap', 'help',
-    'report-bug', 'feedback', 'credits', 'licenses'
+    'about', 'how-to-play', 'multiplayer-guide', 'faq', 'privacy', 'terms', 'contact', 'compatibility', 'changelog'
   ]
 
   const staticRoutes: MetadataRoute.Sitemap = [
